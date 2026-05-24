@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'books',                    # Aplikacja biblioteczna - dodanie aplikacja biblioteczna
     
     # Narzędzie do debugowania podczas developmentu
     'debug_toolbar',
