@@ -5,11 +5,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('books.urls')),           # Główna aplikacja books
     
-    # Debug Toolbar - tylko w trybie DEBUG
+    # Debug Toolbar
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 
-# Obsługa plików media (zdjęcia) w trybie developerskim
+# Obsługa zdjęć (media) w trybie developerskim
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
