@@ -1,3 +1,40 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import Ksiazka, Gatunek
 
-# Create your views here.
+
+def home(request):
+    """Strona główna biblioteki"""
+    ostatnie_ksiazki = Ksiazka.objects.all()[:8]  # ostatnie 8 książek
+    kontekst = {
+        'ostatnie_ksiazki': ostatnie_ksiazki,
+        'title': 'BiblioTech - Biblioteka Online',
+    }
+    return render(request, 'home.html', kontekst)
+
+
+def katalog(request):
+    """Pełny katalog książek z możliwością filtrowania"""
+    ksiazki = Ksiazka.objects.all()
+    gatunki = Gatunek.objects.all()
+    
+    # Filtrowanie po gatunku
+    gatunek_id = request.GET.get('gatunek')
+    if gatunek_id:
+        ksiazki = ksiazki.filter(gatunek_id=gatunek_id)
+    
+    kontekst = {
+        'ksiazki': ksiazki,
+        'gatunki': gatunki,
+        'title': 'Katalog książek',
+    }
+    return render(request, 'katalog.html', kontekst)
+
+
+def ksiazka_detail(request, pk):
+    """Szczegóły jednej książki"""
+    ksiazka = get_object_or_404(Ksiazka, pk=pk)
+    kontekst = {
+        'ksiazka': ksiazka,
+        'title': ksiazka.tytul,
+    }
+    return render(request, 'ksiazka_detail.html', kontekst)
