@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #2c3e50; }
+        .ksiazka { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <h1>BiblioTech - Witaj w bibliotece!</h1>
+    <p><a href="/katalog/">Przejdź do pełnego katalogu</a></p>
+    
+    <h2>Ostatnio dodane książki</h2>
+    {% for ksiazka in ostatnie_ksiazki %}
+        <div class="ksiazka">
+            <h3>{{ ksiazka.tytul }}</h3>
+            <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
+            <p><a href="/ksiazka/{{ ksiazka.id }}/">Zobacz szczegóły →</a></p>
+        </div>
+    {% empty %}
+        <p>Brak książek w bazie.</p>
+    {% endfor %}
+</body>
+</html>

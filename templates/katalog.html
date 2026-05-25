@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .ksiazka { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .filtr { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Katalog książek</h1>
+    <p><a href="/">← Powrót na stronę główną</a></p>
+
+    <div class="filtr">
+        <strong>Filtruj po gatunku:</strong><br>
+        {% for gatunek in gatunki %}
+            <a href="?gatunek={{ gatunek.id }}">{{ gatunek.nazwa }}</a> | 
+        {% endfor %}
+        <a href="/katalog/">Wszystkie</a>
+    </div>
+
+    <h2>Znaleziono {{ ksiazki.count }} książek</h2>
+
+    {% for ksiazka in ksiazki %}
+        <div class="ksiazka">
+            <h3>{{ ksiazka.tytul }}</h3>
+            <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
+            <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
+            <a href="/ksiazka/{{ ksiazka.id }}/">Szczegóły →</a>
+        </div>
+    {% empty %}
+        <p>Brak książek w tej kategorii.</p>
+    {% endfor %}
+</body>
+</html>
