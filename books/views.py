@@ -1,5 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Ksiazka, Gatunek
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.shortcuts import redirect
+from django.contrib import messages
 
 
 def home(request):
@@ -38,3 +42,17 @@ def ksiazka_detail(request, pk):
         'title': ksiazka.tytul,
     }
     return render(request, 'ksiazka_detail.html', kontekst)
+
+def register(request):
+    """Rejestracja nowego użytkownika"""
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Konto zostało utworzone pomyślnie!')
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'register.html', {'form': form})
