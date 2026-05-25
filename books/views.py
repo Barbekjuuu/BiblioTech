@@ -6,6 +6,8 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from .models import Egzemplarz, Rezerwacja
 
 
 def home(request):
@@ -67,9 +69,25 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         return '/'
 
-
-# Widok wylogowania
 # Widok wylogowania
 class CustomLogoutView(LogoutView):
     next_page = 'home'
     http_method_names = ['get', 'post']  
+
+@login_required
+def rezerwuj_ksiazke(request, egzemplarz_id):
+    """Rezerwacja konkretnego egzemplarza"""
+    egzemplarz = get_object_or_404(Egzemplarz, id=egzemplarz_id, status='dostepny')
+    
+    # Tworzymy rezerwację
+    rezerwacja = Rezerwacja.objects.create(
+        uzytkownik=request.user,
+        egzemplarz=egzemplarz
+    )
+    
+    # Zmiana statusu egzemplarza
+    egzemplarz.status = 'zarezerwowany'
+    egzemplarz.save()
+    
+    messages.success(request, f'Rezerwacja książki "{egzemplarz.ksiazka.tytul}" została pomyślnie utworzona!')
+    return redirect('ksiazka_detail', pk=egzemplarz.ksiazka.id)
