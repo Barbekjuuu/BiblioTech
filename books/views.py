@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 
 
@@ -59,10 +59,15 @@ def register(request):
     
     return render(request, 'register.html', {'form': form})
 
-
+# Widok logowania
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     authentication_form = AuthenticationForm
     
     def get_success_url(self):
         return '/'
+
+
+# Widok wylogowania
+class CustomLogoutView(LogoutView):
+    next_page = 'home'
