@@ -106,3 +106,7 @@ MEDIA_ROOT = BASE_DIR / 'media'         # Folder, w którym będą zapisywane zd
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+# Po zalogowaniu przekieruj na stronę główną
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
