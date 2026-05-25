@@ -5,4 +5,9 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('katalog/', views.katalog, name='katalog'),
     path('ksiazka/<int:pk>/', views.ksiazka_detail, name='ksiazka_detail'),
+    
+    # Uwierzytelnianie
+    path('register/', views.register, name='register'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(next_page='home'), name='logout'),  
 ]

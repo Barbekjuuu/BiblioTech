@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Logowanie - BiblioTech{% endblock %}
+
+{% block content %}
+    <h1>Zaloguj się</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: green;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" style="max-width:400px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="padding:10px 20px; font-size:16px;">Zaloguj się</button>
+    </form>
+    
+    <p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj się</a></p>
+{% endblock %}
