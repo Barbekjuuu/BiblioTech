@@ -30,7 +30,10 @@
             <a href="/katalog/">Katalog</a>
             {% if user.is_authenticated %}
                 <span>Witaj, {{ user.username }}!</span>
-                <a href="{% url 'logout' %}">Wyloguj się</a>
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none; border:none; color:white; cursor:pointer; text-decoration:underline;">Wyloguj się</button>
+                </form>
             {% else %}
                 <a href="{% url 'login' %}">Zaloguj się</a>
                 <a href="{% url 'register' %}">Zarejestruj się</a>

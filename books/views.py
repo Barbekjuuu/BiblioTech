@@ -69,5 +69,7 @@ class CustomLoginView(LoginView):
 
 
 # Widok wylogowania
+# Widok wylogowania
 class CustomLogoutView(LogoutView):
     next_page = 'home'
+    http_method_names = ['get', 'post']  
