@@ -1,28 +1,22 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-        .okladka { max-width: 300px; margin: 20px 0; }
-    </style>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
     <p><a href="/katalog/">← Wróć do katalogu</a></p>
 
     <h1>{{ ksiazka.tytul }}</h1>
     
     {% if ksiazka.okladka %}
-        <img src="{{ ksiazka.okladka.url }}" alt="{{ ksiazka.tytul }}" class="okladka">
+        <img src="{{ ksiazka.okladka.url }}" alt="{{ ksiazka.tytul }}" style="max-width:300px; margin:20px 0;">
     {% endif %}
 
     <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
     <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
     <p><strong>Data wydania:</strong> {{ ksiazka.data_wydania }}</p>
 
-    <h3>Opis</h3>
-    <p>{{ ksiazka.opis }}</p>
+    <h3>Opis książki</h3>
+    <p>{{ ksiazka.opis|linebreaks }}</p>
 
     <h3>Dostępne egzemplarze</h3>
     <ul>
@@ -32,5 +26,4 @@
         <li>Brak dostępnych egzemplarzy</li>
     {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}
