@@ -75,9 +75,15 @@ class Rezerwacja(models.Model):
     data_waznosci = models.DateTimeField()
 
     def save(self, *args, **kwargs):
+        # Ustawiamy datę rezerwacji jeśli nie jest ustawiona
+        if not self.data_rezerwacji:
+            self.data_rezerwacji = timezone.now()
+        
+        # Obliczamy datę ważności (2 tygodnie)
         if not self.data_waznosci:
             self.data_waznosci = self.data_rezerwacji + timedelta(weeks=2)
-        super().save(*args, **kwargs)
+        
+        super().save(*args, **kwargs)    
 
     def __str__(self):
         return f"Rezerwacja: {self.egzemplarz} dla {self.uzytkownik}"
