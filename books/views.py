@@ -91,3 +91,14 @@ def rezerwuj_ksiazke(request, egzemplarz_id):
     
     messages.success(request, f'Rezerwacja książki "{egzemplarz.ksiazka.tytul}" została pomyślnie utworzona!')
     return redirect('ksiazka_detail', pk=egzemplarz.ksiazka.id)
+
+@login_required
+def moje_rezerwacje(request):
+    """Wyświetla rezerwacje zalogowanego użytkownika"""
+    rezerwacje = Rezerwacja.objects.filter(uzytkownik=request.user).order_by('-data_rezerwacji')
+    
+    kontekst = {
+        'rezerwacje': rezerwacje,
+        'title': 'Moje rezerwacje',
+    }
+    return render(request, 'moje_rezerwacje.html', kontekst)

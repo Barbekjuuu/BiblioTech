@@ -13,4 +13,6 @@ urlpatterns = [
     
     # Rezerwacja książki
     path('rezerwuj/<int:egzemplarz_id>/', views.rezerwuj_ksiazke, name='rezerwuj_ksiazke'),
+
+    path('moje-rezerwacje/', views.moje_rezerwacje, name='moje_rezerwacje'),
 ]

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>Moje rezerwacje</h1>
+    
+    {% if rezerwacje %}
+        {% for rez in rezerwacje %}
+            <div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:8px;">
+                <h3>{{ rez.egzemplarz.ksiazka.tytul }}</h3>
+                <p><strong>Autor:</strong> {{ rez.egzemplarz.ksiazka.autor }}</p>
+                <p><strong>Data rezerwacji:</strong> {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}</p>
+                <p><strong>Ważna do:</strong> {{ rez.data_waznosci|date:"d.m.Y H:i" }}</p>
+                <p><strong>Status:</strong> {{ rez.egzemplarz.get_status_display }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nie masz jeszcze żadnych rezerwacji.</p>
+    {% endif %}
+    
+    <p><a href="/katalog/">Przejdź do katalogu →</a></p>
+{% endblock %}
