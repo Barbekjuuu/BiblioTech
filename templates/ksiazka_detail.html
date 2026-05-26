@@ -20,10 +20,19 @@
 
     <h3>Dostępne egzemplarze</h3>
     <ul>
-    {% for egz in ksiazka.egzemplarze.all %}
-        <li>{{ egz.get_status_display }}</li>
-    {% empty %}
-        <li>Brak dostępnych egzemplarzy</li>
-    {% endfor %}
+        {% for egz in ksiazka.egzemplarze.all %}
+            <li>
+                {{ egz.get_status_display }}
+                {% if user.is_authenticated and egz.status == 'dostepny' %}
+                    <a href="{% url 'rezerwuj_ksiazke' egz.id %}" 
+                       style="color:green; margin-left:15px;"
+                       onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz na 2 tygodnie?')">
+                        → Zarezerwuj
+                    </a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Brak dostępnych egzemplarzy</li>
+        {% endfor %}
     </ul>
 {% endblock %}
