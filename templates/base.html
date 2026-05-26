@@ -4,25 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}BiblioTech{% endblock %}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        header {
-            background: #2c3e50;
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-        }
-        nav a:hover { text-decoration: underline; }
-        .container { padding: 40px; }
-    </style>
     
+    <!-- Główny plik CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        /* Dodatkowe style inline - nadpisują CSS jeśli potrzeba */
+    </style>
 </head>
 <body>
     <header>
