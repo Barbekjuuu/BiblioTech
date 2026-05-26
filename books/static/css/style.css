@@ -1,34 +1,60 @@
-/* Elegancki akademicki styl - inspirowany ZSR Library */
+/* Elegancki akademicki styl - ciemny + złoto-beżowy */
 
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #2b2d2f;
-    color: rgb(191, 173, 70);
+    background-color: #0f172a;
+    color: #e2e8f0;
 }
 
 header {
-    background: #1e2937;
-    color: rgb(191, 173, 70);
-    padding: 1rem 2.5rem;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    background: #020617;
+    color: white;
+    padding: 1.2rem 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-header h2 a {
-    color: rgb(191, 173, 70);
-    text-decoration: none;
+.header-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.book-icon {
+    font-size: 2.2rem;
+    color: #fcd34d;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 2.1rem;
     font-weight: 700;
+    color: #fcd34d;
+    letter-spacing: 1px;
+    font-style: italic;
 }
 
 nav a {
     color: #cbd5e1;
     margin: 0 18px;
     text-decoration: none;
+    font-weight: 500;
 }
 
 nav a:hover {
-    color: rgb(191, 173, 70);
+    color: #fcd34d;
 }
 
 /* Główna zawartość */
@@ -40,49 +66,38 @@ nav a:hover {
 
 /* Karty książek */
 .ksiazka {
-    background: rgba(138, 110, 32, 0.647);
+    background: #1e2937;
+    border: 1px solid #475569;
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 1.8rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
     transition: all 0.3s ease;
     display: flex;
     gap: 25px;
-    border: 1px solid #e2e8f0;
 }
 
 .ksiazka:hover {
-    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(251, 191, 36, 0.2);
+    border-color: #fcd34d;
 }
 
 .ksiazka img {
-    width: 160px;
-    height: 230px;
+    width: 170px;
+    height: 240px;
     object-fit: cover;
     border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
 .ksiazka-content h3 {
     margin: 0 0 12px 0;
-    color: #1e2937;
+    color: #fcd34d;
+    font-size: 1.45rem;
 }
 
 .ksiazka-content p {
-    margin: 6px 0;
-    color: #475569;
-}
-
-/* Przyciski */
-button, a.btn {
-    background: #334155;
-    color: white;
-    padding: 10px 22px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-button:hover, a.btn:hover {
-    background: #1e2937;
+    margin: 8px 0;
+    color: #cbd5e1;
 }
