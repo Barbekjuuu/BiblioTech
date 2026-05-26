@@ -7,32 +7,39 @@
 
     <h1>{{ ksiazka.tytul }}</h1>
     
-    {% if ksiazka.okladka %}
-        <img src="{{ ksiazka.okladka.url }}" alt="{{ ksiazka.tytul }}" style="max-width:300px; margin:20px 0;">
-    {% endif %}
+    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+        {% if ksiazka.okladka %}
+            <img src="{{ ksiazka.okladka.url }}" alt="{{ ksiazka.tytul }}" style="max-width:280px; border-radius:12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
+        {% else %}
+            <div style="width:280px; height:380px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:1.1rem;">
+                <strong>Brak okładki</strong>
+            </div>
+        {% endif %}
 
-    <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
-    <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
-    <p><strong>Data wydania:</strong> {{ ksiazka.data_wydania }}</p>
+        <div style="flex: 1; min-width: 300px;">
+            <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
+            <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
+            <p><strong>Data wydania:</strong> {{ ksiazka.data_wydania|date:"d.m.Y" }}</p>
 
-    <h3>Opis książki</h3>
-    <p>{{ ksiazka.opis|linebreaks }}</p>
+            <h3>Opis</h3>
+            <p>{{ ksiazka.opis|linebreaks }}</p>
 
-    <h3>Dostępne egzemplarze</h3>
-    <ul>
-        {% for egz in ksiazka.egzemplarze.all %}
-            <li>
-                {{ egz.get_status_display }}
-                {% if user.is_authenticated and egz.status == 'dostepny' %}
-                    <a href="{% url 'rezerwuj_ksiazke' egz.id %}" 
-                       style="color:green; margin-left:15px;"
-                       onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz na 2 tygodnie?')">
-                        → Zarezerwuj
-                    </a>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>Brak dostępnych egzemplarzy</li>
-        {% endfor %}
-    </ul>
+            <h3>Dostępne egzemplarze</h3>
+            <ul>
+            {% for egz in ksiazka.egzemplarze.all %}
+                <li>
+                    {{ egz.get_status_display }}
+                    {% if user.is_authenticated and egz.status == 'dostepny' %}
+                        <a href="{% url 'rezerwuj_ksiazke' egz.id %}" 
+                           onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz?')">
+                           → Zarezerwuj
+                        </a>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>Brak dostępnych egzemplarzy</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endblock %}
