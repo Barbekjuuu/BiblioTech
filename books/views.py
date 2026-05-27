@@ -8,6 +8,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .models import Egzemplarz, Rezerwacja
+from django.db.models import Q
 
 
 def home(request):
@@ -21,9 +22,19 @@ def home(request):
 
 
 def katalog(request):
-    """Pełny katalog książek z możliwością filtrowania"""
+    """Pełny katalog książek z wyszukiwarką i filtrowaniem"""
     ksiazki = Ksiazka.objects.all()
     gatunki = Gatunek.objects.all()
+    
+    # Wyszukiwanie tekstowe
+    query = request.GET.get('q')
+    if query:
+        ksiazki = ksiazki.filter(
+            Q(tytul__icontains=query) | 
+            Q(opis__icontains=query) | 
+            Q(autor__imie_nazwisko__icontains=query) |
+            Q(gatunek__nazwa__icontains=query)
+        )
     
     # Filtrowanie po gatunku
     gatunek_id = request.GET.get('gatunek')
@@ -34,6 +45,7 @@ def katalog(request):
         'ksiazki': ksiazki,
         'gatunki': gatunki,
         'title': 'Katalog książek',
+        'query': query,          # przekazujemy zapytanie, żeby pokazać w formularzu
     }
     return render(request, 'katalog.html', kontekst)
 

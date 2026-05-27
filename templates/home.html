@@ -3,13 +3,18 @@
 {% block title %}BiblioTech - Biblioteka Online{% endblock %}
 
 {% block content %}
-    <!-- Sekcja Hero - powitanie -->
+    <!-- Sekcja hero z wyszukiwarką -->
     <div class="hero">
         <h1>Witaj w BiblioTech</h1>
         <p>Odkrywaj, rezerwuj i czytaj – wszystko w jednym miejscu</p>
         
-        <form action="/katalog/" method="get" class="search-form">
-            <input type="text" name="q" placeholder="Szukaj książki, autora lub gatunku..." />
+        <form action="{% url 'katalog' %}" method="get" class="search-form">
+            <input 
+                type="text" 
+                name="q" 
+                value="{{ query|default:'' }}"
+                placeholder="Szukaj tytułu, autora lub gatunku..." 
+                autocomplete="off">
             <button type="submit">Szukaj</button>
         </form>
     </div>
