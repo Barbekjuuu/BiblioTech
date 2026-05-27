@@ -5,34 +5,45 @@
 {% block content %}
     <h1>Katalog książek</h1>
     
-    <div style="margin-bottom: 25px;">
+    <!-- Filtry -->
+    <div style="margin-bottom: 25px; background: #2a2a2b; padding: 20px; border-radius: 10px;">
         <strong>Filtruj po gatunku:</strong><br>
         {% for gatunek in gatunki %}
-            <a href="?gatunek={{ gatunek.id }}">{{ gatunek.nazwa }}</a> &nbsp;|&nbsp; 
+            <a href="?{% if query %}q={{ query }}&{% endif %}gatunek={{ gatunek.id }}" 
+               style="{% if selected_gatunek == gatunek.id|stringformat:'s' %}font-weight:bold; color:#9e8c46;{% endif %}">
+                {{ gatunek.nazwa }}
+            </a> &nbsp;|&nbsp; 
         {% endfor %}
-        <a href="/katalog/">Wszystkie</a>
+        <a href="{% if query %}?q={{ query }}{% else %}/katalog/{% endif %}">Wszystkie</a>
+        
+        <br><br>
+        
+        <strong>Filtruj po języku:</strong><br>
+        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=pl" style="{% if selected_jezyk == 'pl' %}font-weight:bold; color:#9e8c46;{% endif %}">Polski</a> |
+        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=en" style="{% if selected_jezyk == 'en' %}font-weight:bold; color:#9e8c46;{% endif %}">Angielski</a> |
+        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=de" style="{% if selected_jezyk == 'de' %}font-weight:bold; color:#9e8c46;{% endif %}">Niemiecki</a> |
+        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=fr" style="{% if selected_jezyk == 'fr' %}font-weight:bold; color:#9e8c46;{% endif %}">Francuski</a> |
+        <a href="{% if query %}?q={{ query }}{% else %}/katalog/{% endif %}">Wszystkie języki</a>
     </div>
 
     <h2>Znaleziono {{ ksiazki.count }} książek</h2>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+    <div class="books-grid">
         {% for ksiazka in ksiazki %}
             <div class="ksiazka">
-                
-                <!-- NOWY MECHANIZM FALLBACK -->
                 <img src="{{ ksiazka.okladka_url }}" 
                      alt="{{ ksiazka.tytul }}"
                      onerror="this.src='/static/images/cover.png';">
                 
                 <div class="ksiazka-content">
                     <h3>{{ ksiazka.tytul }}</h3>
-                    <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
-                    <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
-                    <a href="{% url 'ksiazka_detail' ksiazka.id %}">Szczegóły →</a>
+                    <p class="author">{{ ksiazka.autor }}</p>
+                    <p class="genre">{{ ksiazka.gatunek }} • {{ ksiazka.get_jezyk_display }}</p>
+                    <a href="{% url 'ksiazka_detail' ksiazka.id %}" class="btn-detail">Szczegóły →</a>
                 </div>
             </div>
         {% empty %}
-            <p>Brak książek w tej kategorii.</p>
+            <p>Brak książek spełniających kryteria wyszukiwania.</p>
         {% endfor %}
     </div>
 {% endblock %}

@@ -22,11 +22,11 @@ def home(request):
 
 
 def katalog(request):
-    """Pełny katalog książek z wyszukiwarką i filtrowaniem"""
+    """Pełny katalog książek z zaawansowanym wyszukiwaniem i filtrowaniem"""
     ksiazki = Ksiazka.objects.all()
     gatunki = Gatunek.objects.all()
     
-    # Wyszukiwanie tekstowe
+    # Wyszukiwanie tekstowe (po tytule, autorze, opisie, gatunku)
     query = request.GET.get('q')
     if query:
         ksiazki = ksiazki.filter(
@@ -36,16 +36,23 @@ def katalog(request):
             Q(gatunek__nazwa__icontains=query)
         )
     
-    # Filtrowanie po gatunku
+    # Filtr po gatunku
     gatunek_id = request.GET.get('gatunek')
     if gatunek_id:
         ksiazki = ksiazki.filter(gatunek_id=gatunek_id)
+    
+    # FILTR PO JĘZYKU
+    jezyk = request.GET.get('jezyk')
+    if jezyk:
+        ksiazki = ksiazki.filter(jezyk=jezyk)
     
     kontekst = {
         'ksiazki': ksiazki,
         'gatunki': gatunki,
         'title': 'Katalog książek',
-        'query': query,          # przekazujemy zapytanie, żeby pokazać w formularzu
+        'query': query,
+        'selected_gatunek': gatunek_id,
+        'selected_jezyk': jezyk,
     }
     return render(request, 'katalog.html', kontekst)
 
