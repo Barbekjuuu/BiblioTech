@@ -1,19 +1,18 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Ksiazka, Gatunek
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .models import Egzemplarz, Rezerwacja
-from django.db.models import Q
+
+from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja
 
 
 def home(request):
     """Strona główna biblioteki"""
-    ostatnie_ksiazki = Ksiazka.objects.all()[:8]  # ostatnie 8 książek
+    ostatnie_ksiazki = Ksiazka.objects.all()[:8]
     kontekst = {
         'ostatnie_ksiazki': ostatnie_ksiazki,
         'title': 'BiblioTech - Biblioteka Online',
@@ -26,7 +25,6 @@ def katalog(request):
     ksiazki = Ksiazka.objects.all()
     gatunki = Gatunek.objects.all()
     
-    # Wyszukiwanie tekstowe (po tytule, autorze, opisie, gatunku)
     query = request.GET.get('q')
     if query:
         ksiazki = ksiazki.filter(
@@ -36,12 +34,10 @@ def katalog(request):
             Q(gatunek__nazwa__icontains=query)
         )
     
-    # Filtr po gatunku
     gatunek_id = request.GET.get('gatunek')
     if gatunek_id:
         ksiazki = ksiazki.filter(gatunek_id=gatunek_id)
     
-    # FILTR PO JĘZYKU
     jezyk = request.GET.get('jezyk')
     if jezyk:
         ksiazki = ksiazki.filter(jezyk=jezyk)
@@ -66,6 +62,7 @@ def ksiazka_detail(request, pk):
     }
     return render(request, 'ksiazka_detail.html', kontekst)
 
+
 def register(request):
     """Rejestracja nowego użytkownika"""
     if request.method == 'POST':
@@ -80,7 +77,7 @@ def register(request):
     
     return render(request, 'register.html', {'form': form})
 
-# Widok logowania
+
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     authentication_form = AuthenticationForm
@@ -88,36 +85,53 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         return '/'
 
-# Widok wylogowania
+
 class CustomLogoutView(LogoutView):
     next_page = 'home'
-    http_method_names = ['get', 'post']  
+    http_method_names = ['get', 'post']
+
 
 @login_required
 def rezerwuj_ksiazke(request, egzemplarz_id):
     """Rezerwacja konkretnego egzemplarza"""
     egzemplarz = get_object_or_404(Egzemplarz, id=egzemplarz_id, status='dostepny')
     
-    # Tworzymy rezerwację
     rezerwacja = Rezerwacja.objects.create(
         uzytkownik=request.user,
         egzemplarz=egzemplarz
     )
     
-    # Zmiana statusu egzemplarza
     egzemplarz.status = 'zarezerwowany'
     egzemplarz.save()
     
     messages.success(request, f'Rezerwacja książki "{egzemplarz.ksiazka.tytul}" została pomyślnie utworzona!')
     return redirect('ksiazka_detail', pk=egzemplarz.ksiazka.id)
 
+
 @login_required
-def moje_rezerwacje(request):
-    """Wyświetla rezerwacje zalogowanego użytkownika"""
-    rezerwacje = Rezerwacja.objects.filter(uzytkownik=request.user).order_by('-data_rezerwacji')
+def profile(request):
+    """Strona profilu użytkownika z zakładkami"""
+    tab = request.GET.get('tab', 'rezerwacje')
+    
+    rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')
     
     kontekst = {
         'rezerwacje': rezerwacje,
-        'title': 'Moje rezerwacje',
+        'title': 'Mój Profil',
+        'active_tab': tab,
     }
-    return render(request, 'moje_rezerwacje.html', kontekst)
+    return render(request, 'profile.html', kontekst)
+
+
+@login_required
+def anuluj_rezerwacje(request, rezerwacja_id):
+    """Anulowanie rezerwacji"""
+    rezerwacja = get_object_or_404(Rezerwacja, id=rezerwacja_id, uzytkownik=request.user)
+    egzemplarz = rezerwacja.egzemplarz
+    
+    egzemplarz.status = 'dostepny'
+    egzemplarz.save()
+    rezerwacja.delete()
+    
+    messages.success(request, 'Rezerwacja została pomyślnie anulowana.')
+    return redirect('profile')

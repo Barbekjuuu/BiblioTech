@@ -24,7 +24,7 @@
                 <a href="/">Strona główna</a>
                 <a href="/katalog/">Katalog</a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'moje_rezerwacje' %}">Moje rezerwacje</a>
+                    <a href="{% url 'profile' %}">Mój Profil</a>
                     <span>Witaj, {{ user.username }}!</span>
                     <a href="{% url 'logout' %}">Wyloguj się</a>
                 {% else %}
