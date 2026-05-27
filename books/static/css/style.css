@@ -88,7 +88,7 @@ nav a:hover {
 }
 
 /* =============================================
-   SEKCJA HERO - identyczne tło jak karty
+   SEKCJA HERO
    ============================================= */
 .hero {
     background-image: url('/static/images/header-bg.png');
@@ -100,7 +100,6 @@ nav a:hover {
     position: relative;
     margin-bottom: 4rem;
     
-    /* To samo co na kartach */
     background-color: rgba(26, 32, 44, 0.65);
     background-blend-mode: multiply;
 }
@@ -150,7 +149,7 @@ nav a:hover {
 }
 
 /* =============================================
-   KARTY KSIĄŻEK - przewijane w bok (bez zmian)
+   KARTY KSIĄŻEK
    ============================================= */
 .container {
     max-width: 1280px;
@@ -215,4 +214,70 @@ nav a:hover {
 .ksiazka-content .author {
     color: #9e8c46;
     font-weight: 500;
+}
+
+/* =============================================
+   PROFIL UŻYTKOWNIKA - nowoczesny sidebar
+   ============================================= */
+.profile-container {
+    display: flex;
+    gap: 0;
+    max-width: 1350px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+.profile-sidebar {
+    width: 300px;
+    background-image: url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(26, 32, 44, 0.92);
+    background-blend-mode: multiply;
+    padding: 35px 25px;
+    border-right: 1px solid rgba(158, 140, 70, 0.3);
+    min-height: 650px;
+}
+
+.profile-sidebar h2 {
+    color: #9e8c46;
+    font-size: 1.95rem;
+    margin: 0 0 35px 0;
+    text-align: center;
+    font-family: 'Great Vibes', cursive;
+}
+
+.sidebar-tab {
+    display: block;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.05rem;
+}
+
+.sidebar-tab:hover,
+.sidebar-tab.active {
+    background: rgba(158, 140, 70, 0.35);
+    color: #fcd34d;
+    transform: translateX(6px);
+}
+
+.profile-content {
+    flex: 1;
+    background-image: url('/static/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(17, 24, 39, 0.88);
+    background-blend-mode: multiply;
+    padding: 40px;
+    min-height: 650px;
 }
