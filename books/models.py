@@ -31,10 +31,22 @@ class Gatunek(models.Model):
 
 class Ksiazka(models.Model):
     """Główny model książki"""
+    JEZYK_CHOICES = [
+        ('pl', 'Polski'),
+        ('en', 'Angielski'),
+        ('de', 'Niemiecki'),
+        ('fr', 'Francuski'),
+        ('es', 'Hiszpański'),
+        ('it', 'Włoski'),
+        ('ru', 'Rosyjski'),
+        ('inne', 'Inny'),
+    ]
+    
     tytul = models.CharField(max_length=300)
     opis = models.TextField(blank=True)
     data_wydania = models.DateField(null=True, blank=True)
     okladka = models.ImageField(upload_to='okladki/', blank=True, null=True)
+    jezyk = models.CharField(max_length=10, choices=JEZYK_CHOICES, default='pl')
     
     autor = models.ForeignKey(Autor, on_delete=models.CASCADE, related_name='ksiazki')
     gatunek = models.ForeignKey(Gatunek, on_delete=models.SET_NULL, null=True, related_name='ksiazki')
