@@ -1,21 +1,49 @@
-/* Elegancki akademicki styl - ciemny + złoto-beżowy */
+/* =============================================
+   GŁÓWNY STYL STRONY - BiblioTech
+   ============================================= */
 
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #0f172a;
+    
+    background-image: url('/static/images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    
     color: #e2e8f0;
+    min-height: 100vh;
 }
 
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(17, 24, 39, 0.75);
+    z-index: -1;
+}
+
+/* =============================================
+   NAGŁÓWEK
+   ============================================= */
 header {
-    background: #020617;
+    background-image: url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
     color: white;
-    padding: 1.2rem 2rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    padding: 1.2rem 2.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
     position: sticky;
     top: 0;
     z-index: 100;
+    
+    background-color: rgba(26, 32, 44, 0.78);
+    background-blend-mode: multiply;
 }
 
 .header-container {
@@ -29,20 +57,22 @@ header {
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
 }
 
-.book-icon {
-    font-size: 2.2rem;
-    color: #fcd34d;
+.custom-logo {
+    height: 62px;
+    width: auto;
+    border-radius: 6px;
 }
 
 .logo h1 {
     margin: 0;
-    font-size: 2.1rem;
-    font-weight: 700;
-    color: #fcd34d;
-    letter-spacing: 1px;
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.8rem;
+    font-weight: 400;
+    color: oklch(55.334% 0.08465 92.419);
+    letter-spacing: 2px;
     font-style: italic;
 }
 
@@ -57,47 +87,132 @@ nav a:hover {
     color: #fcd34d;
 }
 
-/* Główna zawartość */
+/* =============================================
+   SEKCJA HERO - identyczne tło jak karty
+   ============================================= */
+.hero {
+    background-image: url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    padding: 140px 20px;
+    text-align: center;
+    color: white;
+    position: relative;
+    margin-bottom: 4rem;
+    
+    /* To samo co na kartach */
+    background-color: rgba(26, 32, 44, 0.65);
+    background-blend-mode: multiply;
+}
+
+.hero h1, .hero p, .search-form {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-size: 2.8rem;
+    margin-bottom: 16px;
+    color: #9e8c46;
+    font-weight: 400;
+}
+
+.hero p {
+    font-size: 1.3rem;
+    margin-bottom: 45px;
+    opacity: 0.95;
+}
+
+.search-form {
+    max-width: 650px;
+    margin: 0 auto;
+    display: flex;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 18px 22px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    background: white;
+    color: #1e2937;
+}
+
+.search-form button {
+    padding: 18px 36px;
+    background: #9e8c46;
+    color: #1e2937;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* =============================================
+   KARTY KSIĄŻEK - przewijane w bok (bez zmian)
+   ============================================= */
 .container {
     max-width: 1280px;
     margin: 3rem auto;
     padding: 0 2rem;
 }
 
-/* Karty książek */
-.ksiazka {
-    background: #1e2937;
-    border: 1px solid #475569;
-    border-radius: 12px;
-    padding: 1.8rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-    transition: all 0.3s ease;
+.books-grid {
     display: flex;
     gap: 25px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.books-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.books-grid::-webkit-scrollbar-thumb {
+    background: #9e8c46;
+    border-radius: 10px;
+}
+
+.ksiazka {
+    background-image: url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(26, 32, 44, 0.65);
+    background-blend-mode: multiply;
+    
+    min-width: 260px;
+    border: 1px solid #4b5563;
+    border-radius: 12px;
+    padding: 1.4rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
 }
 
 .ksiazka:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(251, 191, 36, 0.2);
-    border-color: #fcd34d;
+    border-color: #9e8c46;
 }
 
 .ksiazka img {
-    width: 170px;
-    height: 240px;
+    width: 100%;
+    height: 180px;
     object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    border-radius: 8px;
+    margin-bottom: 12px;
 }
 
 .ksiazka-content h3 {
-    margin: 0 0 12px 0;
-    color: #fcd34d;
-    font-size: 1.45rem;
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    color: #e2e8f0;
 }
 
-.ksiazka-content p {
-    margin: 8px 0;
-    color: #cbd5e1;
+.ksiazka-content .author {
+    color: #9e8c46;
+    font-weight: 500;
 }
