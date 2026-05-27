@@ -3,40 +3,44 @@
 {% block title %}BiblioTech - Biblioteka Online{% endblock %}
 
 {% block content %}
-    <!-- Sekcja hero z wyszukiwarką -->
-    <div style="background: linear-gradient(rgba(43, 42, 42, 0.7), rgba(43, 42, 42, 0.7)), url('https://source.unsplash.com/random/1600x900/?library'); background-size: cover; color: white; text-align: center; padding: 120px 20px;">
-        <h1 style="font-size: 3rem; margin-bottom: 20px;">Witaj w BiblioTech</h1>
-        <p style="font-size: 1.3rem; margin-bottom: 40px;">Odkrywaj, rezerwuj i czytaj – wszystko w jednym miejscu</p>
+    <!-- Sekcja Hero - powitanie -->
+    <div class="hero">
+        <h1>Witaj w BiblioTech</h1>
+        <p>Odkrywaj, rezerwuj i czytaj – wszystko w jednym miejscu</p>
         
-        <form action="/katalog/" method="get" style="max-width: 600px; margin: 0 auto;">
-            <input type="text" name="q" placeholder="Szukaj książki, autora lub gatunku..." 
-                   style="width: 80%; padding: 15px; font-size: 1.1rem; border: none; border-radius: 8px 0 0 8px;">
-            <button type="submit" style="padding: 15px 30px; background: #9e8c46; color: #1e2937; border: none; border-radius: 0 8px 8px 0; font-weight: bold;">Szukaj</button>
+        <form action="/katalog/" method="get" class="search-form">
+            <input type="text" name="q" placeholder="Szukaj książki, autora lub gatunku..." />
+            <button type="submit">Szukaj</button>
         </form>
     </div>
 
+    <!-- Sekcja ostatnich książek -->
     <div class="container">
-        <h2 style="text-align:center; margin: 50px 0 30px;">Ostatnio dodane książki</h2>
+        <h2>Ostatnio dodane książki</h2>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+        <div class="books-grid">
             {% for ksiazka in ostatnie_ksiazki %}
                 <div class="ksiazka">
                     {% if ksiazka.okladka %}
                         <img src="{{ ksiazka.okladka.url }}" alt="{{ ksiazka.tytul }}">
                     {% else %}
-                        <div style="width:160px; height:230px; background:#334155; color:white; display:flex; align-items:center; justify-content:center; border-radius:8px;">Brak okładki</div>
+                        <div class="no-cover">Brak okładki</div>
                     {% endif %}
+                    
                     <div class="ksiazka-content">
                         <h3>{{ ksiazka.tytul }}</h3>
-                        <p><strong>{{ ksiazka.autor }}</strong></p>
-                        <a href="{% url 'ksiazka_detail' ksiazka.id %}">Szczegóły →</a>
+                        <p class="author">{{ ksiazka.autor }}</p>
+                        <p class="genre">{{ ksiazka.gatunek }}</p>
+                        <a href="{% url 'ksiazka_detail' ksiazka.id %}" class="btn-detail">Szczegóły →</a>
                     </div>
                 </div>
+            {% empty %}
+                <p>Brak książek w bazie.</p>
             {% endfor %}
         </div>
 
-        <p style="text-align:center; margin-top:40px;">
-            <a href="/katalog/" style="font-size:1.2rem; color:#facc15;">Przejdź do pełnego katalogu →</a>
+        <p class="text-center">
+            <a href="/katalog/" class="catalog-link">Przejdź do pełnego katalogu →</a>
         </p>
     </div>
 {% endblock %}

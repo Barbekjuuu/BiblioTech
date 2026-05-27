@@ -4,14 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}BiblioTech{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <header>
         <div class="header-container">
-            <!-- Logo + nazwa -->
             <div class="logo">
-                <span class="book-icon">📖</span>
+                <!-- Twoje logo -->
+                <img src="{% static 'images/logo.png' %}" 
+                     alt="BiblioTech Logo" 
+                     class="custom-logo">
                 <h1>BiblioTech</h1>
             </div>
             
