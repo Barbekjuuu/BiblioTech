@@ -5,41 +5,42 @@
 {% block content %}
     <p><a href="{% url 'katalog' %}">← Powrót do katalogu</a></p>
 
-    <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+    <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; max-width: 1100px;">
         
-        <!-- Zdjęcie okładki -->
+        <!-- Okładka książki -->
         <div>
             <img src="{{ ksiazka.okladka_url }}" 
                  alt="{{ ksiazka.tytul }}"
-                 style="max-width: 320px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.3);">
+                 onerror="this.src='/static/images/cover.png';"
+                 style="max-width: 340px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
         </div>
 
-        <!-- Informacje o książce -->
+        <!-- Główna treść -->
         <div style="flex: 1; min-width: 300px;">
-            <h1>{{ ksiazka.tytul }}</h1>
+            <h1 style="margin-top: 0;">{{ ksiazka.tytul }}</h1>
             
             <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
             <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
             <p><strong>Język:</strong> {{ ksiazka.get_jezyk_display }}</p>
             <p><strong>Data wydania:</strong> {{ ksiazka.data_wydania|date:"d.m.Y" }}</p>
 
-            <h3>Opis</h3>
-            <p style="line-height: 1.7;">{{ ksiazka.opis|linebreaks }}</p>
+            <h3>Opis książki</h3>
+            <p style="line-height: 1.8; font-size: 1.05rem;">{{ ksiazka.opis|linebreaks }}</p>
 
             <h3>Dostępne egzemplarze</h3>
             {% for egz in ksiazka.egzemplarze.all %}
-                <div style="background: #2a2a2b; padding: 12px; margin: 8px 0; border-radius: 8px;">
+                <div style="background: #2a2a2b; padding: 15px; margin: 10px 0; border-radius: 10px; border-left: 5px solid #9e8c46;">
                     {{ egz.get_status_display }}
                     {% if user.is_authenticated and egz.status == 'dostepny' %}
                         <a href="{% url 'rezerwuj_ksiazke' egz.id %}" 
                            onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz?')"
-                           style="color: #9e8c46; margin-left: 15px;">
-                           → Zarezerwuj
+                           style="color: #9e8c46; font-weight: bold; margin-left: 20px;">
+                           → Zarezerwuj na 2 tygodnie
                         </a>
                     {% endif %}
                 </div>
             {% empty %}
-                <p>Brak dostępnych egzemplarzy w tej chwili.</p>
+                <p style="color: #f87171;">Obecnie brak dostępnych egzemplarzy.</p>
             {% endfor %}
         </div>
     </div>
