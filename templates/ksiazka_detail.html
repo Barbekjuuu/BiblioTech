@@ -1,45 +1,46 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ ksiazka.tytul }}{% endblock %}
 
 {% block content %}
-    <p><a href="/katalog/">← Wróć do katalogu</a></p>
+    <p><a href="{% url 'katalog' %}">← Powrót do katalogu</a></p>
 
-    <h1>{{ ksiazka.tytul }}</h1>
-    
-    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-        {% if ksiazka.okladka %}
-            <img src="{{ ksiazka.okladka.url }}" alt="{{ ksiazka.tytul }}" style="max-width:280px; border-radius:12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
-        {% else %}
-            <div style="width:280px; height:380px; background:#e2e8f0; display:flex; align-items:center; justify-content:center; border-radius:12px; font-size:1.1rem;">
-                <strong>Brak okładki</strong>
-            </div>
-        {% endif %}
+    <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
+        
+        <!-- Zdjęcie okładki -->
+        <div>
+            <img src="{{ ksiazka.okladka_url }}" 
+                 alt="{{ ksiazka.tytul }}"
+                 style="max-width: 320px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.3);">
+        </div>
 
+        <!-- Informacje o książce -->
         <div style="flex: 1; min-width: 300px;">
+            <h1>{{ ksiazka.tytul }}</h1>
+            
             <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
             <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
+            <p><strong>Język:</strong> {{ ksiazka.get_jezyk_display }}</p>
             <p><strong>Data wydania:</strong> {{ ksiazka.data_wydania|date:"d.m.Y" }}</p>
 
             <h3>Opis</h3>
-            <p>{{ ksiazka.opis|linebreaks }}</p>
+            <p style="line-height: 1.7;">{{ ksiazka.opis|linebreaks }}</p>
 
             <h3>Dostępne egzemplarze</h3>
-            <ul>
             {% for egz in ksiazka.egzemplarze.all %}
-                <li>
+                <div style="background: #2a2a2b; padding: 12px; margin: 8px 0; border-radius: 8px;">
                     {{ egz.get_status_display }}
                     {% if user.is_authenticated and egz.status == 'dostepny' %}
                         <a href="{% url 'rezerwuj_ksiazke' egz.id %}" 
-                           onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz?')">
+                           onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz?')"
+                           style="color: #9e8c46; margin-left: 15px;">
                            → Zarezerwuj
                         </a>
                     {% endif %}
-                </li>
+                </div>
             {% empty %}
-                <li>Brak dostępnych egzemplarzy</li>
+                <p>Brak dostępnych egzemplarzy w tej chwili.</p>
             {% endfor %}
-            </ul>
         </div>
     </div>
 {% endblock %}

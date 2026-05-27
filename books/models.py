@@ -50,7 +50,11 @@ class Ksiazka(models.Model):
     
     autor = models.ForeignKey(Autor, on_delete=models.CASCADE, related_name='ksiazki')
     gatunek = models.ForeignKey(Gatunek, on_delete=models.SET_NULL, null=True, related_name='ksiazki')
-
+    def okladka_url(self):
+        """Zwraca URL okładki lub domyślny obrazek"""
+        if self.okladka:
+            return self.okladka.url
+        return '/static/images/cover.png'  # domyślna okładka
     def __str__(self):
         return self.tytul
 
