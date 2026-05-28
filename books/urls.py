@@ -11,10 +11,12 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     
-    # Rezerwacja książki
-    path('rezerwuj/<int:egzemplarz_id>/', views.rezerwuj_ksiazke, name='rezerwuj_ksiazke'),
-
-    # Profil użytkownika i zarządzanie rezerwacjami
+    # Koszyk i wypożyczenia
+    path('koszyk/', views.koszyk, name='koszyk'),
+    path('koszyk/dodaj/<int:egzemplarz_id>/', views.dodaj_do_koszyka, name='dodaj_do_koszyka'),
+    path('koszyk/zatwierdz/', views.zatwierdz_koszyk, name='zatwierdz_koszyk'),
+    
+    # Profil i zarządzanie
     path('profil/', views.profile, name='profile'),
     path('rezerwacja/anuluj/<int:rezerwacja_id>/', views.anuluj_rezerwacje, name='anuluj_rezerwacje'),
 ]

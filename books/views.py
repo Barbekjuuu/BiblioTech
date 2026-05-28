@@ -91,26 +91,61 @@ class CustomLogoutView(LogoutView):
     http_method_names = ['get', 'post']
 
 
+# ====================== NOWE FUNKCJE KOSZYKA ======================
+
 @login_required
-def rezerwuj_ksiazke(request, egzemplarz_id):
-    """Rezerwacja konkretnego egzemplarza"""
+def dodaj_do_koszyka(request, egzemplarz_id):
+    """Dodaje egzemplarz do koszyka (sesja)"""
     egzemplarz = get_object_or_404(Egzemplarz, id=egzemplarz_id, status='dostepny')
     
-    rezerwacja = Rezerwacja.objects.create(
-        uzytkownik=request.user,
-        egzemplarz=egzemplarz
-    )
+    koszyk = request.session.get('koszyk', [])
+    if egzemplarz_id not in koszyk:
+        koszyk.append(egzemplarz_id)
+        request.session['koszyk'] = koszyk
+        messages.success(request, f'Książka "{egzemplarz.ksiazka.tytul}" dodana do koszyka.')
+    else:
+        messages.info(request, 'Ta książka jest już w koszyku.')
     
-    egzemplarz.status = 'zarezerwowany'
-    egzemplarz.save()
-    
-    messages.success(request, f'Rezerwacja książki "{egzemplarz.ksiazka.tytul}" została pomyślnie utworzona!')
     return redirect('ksiazka_detail', pk=egzemplarz.ksiazka.id)
 
 
 @login_required
+def koszyk(request):
+    """Osobna strona koszyka"""
+    koszyk_ids = request.session.get('koszyk', [])
+    egzemplarze = Egzemplarz.objects.filter(id__in=koszyk_ids)
+    
+    kontekst = {
+        'egzemplarze': egzemplarze,
+        'title': 'Koszyk rezerwacji',
+    }
+    return render(request, 'koszyk.html', kontekst)
+
+
+@login_required
+def zatwierdz_koszyk(request):
+    """Zatwierdza koszyk i przenosi do Moich wypożyczeń"""
+    koszyk_ids = request.session.get('koszyk', [])
+    
+    for egz_id in koszyk_ids:
+        egzemplarz = get_object_or_404(Egzemplarz, id=egz_id, status='dostepny')
+        Rezerwacja.objects.create(
+            uzytkownik=request.user,
+            egzemplarz=egzemplarz
+        )
+        egzemplarz.status = 'zarezerwowany'
+        egzemplarz.save()
+    
+    request.session['koszyk'] = []
+    messages.success(request, 'Wypożyczenie zostało zatwierdzone! Sprawdź Moje wypożyczenia.')
+    return redirect('profile')
+
+
+# ====================== PROFIL ======================
+
+@login_required
 def profile(request):
-    """Strona profilu użytkownika z zakładkami"""
+    """Strona profilu użytkownika"""
     tab = request.GET.get('tab', 'rezerwacje')
     
     rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')

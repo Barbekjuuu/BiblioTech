@@ -284,3 +284,122 @@ nav a:hover {
     padding: 45px;
     min-height: 680px;
 }
+/* =============================================
+   PROFIL UŻYTKOWNIKA
+   ============================================= */
+
+.profile-container {
+    display: flex;
+    gap: 30px;
+    max-width: 1280px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    min-height: 70vh;
+}
+
+/* Lewy sidebar */
+.profile-sidebar {
+    width: 280px;
+    background: rgba(26, 32, 44, 0.85);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    height: fit-content;
+    border: 1px solid #4b5563;
+}
+
+.profile-sidebar h2 {
+    color: #9e8c46;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-family: 'Great Vibes', cursive;
+    font-size: 2rem;
+}
+
+.sidebar-tab {
+    display: block;
+    padding: 12px 18px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+}
+
+.sidebar-tab:hover,
+.sidebar-tab.active {
+    background: #9e8c46;
+    color: #1e2937;
+    font-weight: 600;
+}
+
+/* Główna zawartość profilu */
+.profile-content {
+    flex: 1;
+    background: rgba(26, 32, 44, 0.85);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #4b5563;
+}
+
+.profile-content h2 {
+    color: #9e8c46;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #9e8c46;
+    padding-bottom: 10px;
+}
+
+/* Element rezerwacji / wypożyczenia */
+.reservation-item {
+    background: rgba(42, 42, 43, 0.9);
+    border: 1px solid #4b5563;
+    border-radius: 10px;
+    padding: 1.4rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.reservation-item:hover {
+    border-color: #9e8c46;
+    transform: translateY(-3px);
+}
+
+/* Złoty pasek oddzielający */
+.reservation-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, transparent, #9e8c46, transparent);
+    margin-top: -1.4rem;
+}
+
+.reservation-info {
+    flex: 1;
+}
+
+.reservation-info strong {
+    color: #e2e8f0;
+    font-size: 1.1rem;
+}
+
+/* Złoty przycisk "Zwracam" */
+.btn-zwroc {
+    background: #9e8c46;
+    color: #1e2937;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    align-self: flex-start;
+}
+
+.btn-zwroc:hover {
+    background: #fcd34d;
+    transform: scale(1.05);
+}

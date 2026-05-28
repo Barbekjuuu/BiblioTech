@@ -31,11 +31,12 @@
             {% for egz in ksiazka.egzemplarze.all %}
                 <div style="background: #2a2a2b; padding: 15px; margin: 10px 0; border-radius: 10px; border-left: 5px solid #9e8c46;">
                     {{ egz.get_status_display }}
+                    
                     {% if user.is_authenticated and egz.status == 'dostepny' %}
-                        <a href="{% url 'rezerwuj_ksiazke' egz.id %}" 
-                           onclick="return confirm('Czy na pewno chcesz zarezerwować ten egzemplarz?')"
-                           style="color: #9e8c46; font-weight: bold; margin-left: 20px;">
-                           → Zarezerwuj na 2 tygodnie
+                        <a href="{% url 'dodaj_do_koszyka' egz.id %}" 
+                           class="btn-wypozycz"
+                           onclick="return confirm('Czy chcesz dodać tę książkę do koszyka wypożyczeń?')">
+                            Wypożycz
                         </a>
                     {% endif %}
                 </div>

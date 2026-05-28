@@ -39,7 +39,21 @@
                     <h3>{{ ksiazka.tytul }}</h3>
                     <p class="author">{{ ksiazka.autor }}</p>
                     <p class="genre">{{ ksiazka.gatunek }} • {{ ksiazka.get_jezyk_display }}</p>
+                    
                     <a href="{% url 'ksiazka_detail' ksiazka.id %}" class="btn-detail">Szczegóły →</a>
+                    
+                    {% if user.is_authenticated %}
+                        {% for egz in ksiazka.egzemplarze.all %}
+                            {% if egz.status == 'dostepny' %}
+                                <a href="{% url 'dodaj_do_koszyka' egz.id %}" 
+                                   class="btn-wypozycz"
+                                   onclick="return confirm('Czy chcesz dodać tę książkę do koszyka?')">
+                                    Wypożycz
+                                </a>
+                                {% break %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         {% empty %}
