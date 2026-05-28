@@ -311,14 +311,14 @@ nav a:hover {
 }
 
 /* =============================================
-   PRZYCISKI "WYPOŻYCZ" - ulepszona wersja
+   PRZYCISKI "WYPOŻYCZ" - ulepszona wersja (spójna z projektem)
    ============================================= */
 
 .btn-wypozycz {
     background: linear-gradient(135deg, #9e8c46, #b89e5c);
     color: #1e2937;
     border: none;
-    padding: 11px 24px;
+    padding: 12px 26px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -326,13 +326,13 @@ nav a:hover {
     display: inline-block;
     margin-top: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(158, 140, 70, 0.3);
-    font-size: 0.98rem;
+    box-shadow: 0 4px 12px rgba(158, 140, 70, 0.4);
+    font-size: 1rem;
 }
 
 .btn-wypozycz:hover {
     background: linear-gradient(135deg, #fcd34d, #facc15);
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.03);
     box-shadow: 0 8px 20px rgba(158, 140, 70, 0.5);
     color: #1e2937;
 }
