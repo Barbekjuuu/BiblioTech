@@ -5,27 +5,27 @@
 {% block content %}
 <div class="profile-container">
 
-    <!-- Lewy Sidebar (nowoczesny styl jak w Grok) -->
+    <!-- Lewy Sidebar -->
     <div class="profile-sidebar">
         <h2>Mój Profil</h2>
         
-        <div onclick="window.location.href='{% url 'profile' %}?tab=rezerwacje'" 
+        <a href="{% url 'profile' %}?tab=rezerwacje" 
              class="sidebar-tab {% if active_tab == 'rezerwacje' or not active_tab %}active{% endif %}">
             📚 Moje Rezerwacje
-        </div>
+        </a>
         
-        <div onclick="window.location.href='{% url 'profile' %}?tab=dane'" 
+        <a href="{% url 'profile' %}?tab=dane" 
              class="sidebar-tab {% if active_tab == 'dane' %}active{% endif %}">
             👤 Moje Dane Osobowe
-        </div>
+        </a>
         
-        <div onclick="window.location.href='{% url 'profile' %}?tab=haslo'" 
+        <a href="{% url 'profile' %}?tab=haslo" 
              class="sidebar-tab {% if active_tab == 'haslo' %}active{% endif %}">
             🔑 Zmiana Hasła
-        </div>
+        </a>
     </div>
 
-    <!-- Prawa część z treścią -->
+    <!-- Prawa zawartość -->
     <div class="profile-content">
         
         {% if active_tab == 'rezerwacje' or not active_tab %}
