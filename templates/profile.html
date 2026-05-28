@@ -4,63 +4,68 @@
 
 {% block content %}
 <div class="profile-container">
-
-    <!-- Lewy Sidebar -->
+    
+    <!-- Lewy pasek nawigacji -->
     <div class="profile-sidebar">
         <h2>Mój Profil</h2>
         
-        <a href="{% url 'profile' %}?tab=rezerwacje" 
-             class="sidebar-tab {% if active_tab == 'rezerwacje' or not active_tab %}active{% endif %}">
-            📚 Moje Rezerwacje
+        <a href="{% url 'profile' %}?tab=koszyk" 
+           class="sidebar-tab {% if active_tab == 'koszyk' %}active{% endif %}">
+            🛒 Koszyk rezerwacji
+        </a>
+        
+        <a href="{% url 'profile' %}?tab=wypozyczenia" 
+           class="sidebar-tab {% if active_tab == 'wypozyczenia' %}active{% endif %}">
+            📚 Moje wypożyczenia
         </a>
         
         <a href="{% url 'profile' %}?tab=dane" 
-             class="sidebar-tab {% if active_tab == 'dane' %}active{% endif %}">
-            👤 Moje Dane Osobowe
+           class="sidebar-tab {% if active_tab == 'dane' %}active{% endif %}">
+            👤 Dane osobowe
         </a>
         
         <a href="{% url 'profile' %}?tab=haslo" 
-             class="sidebar-tab {% if active_tab == 'haslo' %}active{% endif %}">
-            🔑 Zmiana Hasła
+           class="sidebar-tab {% if active_tab == 'haslo' %}active{% endif %}">
+            🔑 Zmiana hasła
         </a>
     </div>
 
-    <!-- Prawa zawartość -->
+    <!-- Główna zawartość -->
     <div class="profile-content">
         
-        {% if active_tab == 'rezerwacje' or not active_tab %}
-            <h1>Moje Rezerwacje</h1>
+        {% if active_tab == 'koszyk' %}
+            <h2>Koszyk rezerwacji</h2>
             {% if rezerwacje %}
                 {% for rez in rezerwacje %}
-                    <div class="rezerwacja-card">
-                        <h3>{{ rez.egzemplarz.ksiazka.tytul }}</h3>
-                        <p><strong>Autor:</strong> {{ rez.egzemplarz.ksiazka.autor }}</p>
-                        <p><strong>Data rezerwacji:</strong> {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}</p>
-                        <p><strong>Ważna do:</strong> {{ rez.data_waznosci|date:"d.m.Y H:i" }}</p>
-                        <a href="{% url 'anuluj_rezerwacje' rez.id %}" 
-                           onclick="return confirm('Czy na pewno chcesz anulować rezerwację?')"
-                           class="cancel-btn">Anuluj rezerwację</a>
+                    <div class="reservation-item">
+                        <div class="reservation-info">
+                            <strong>{{ rez.egzemplarz.ksiazka.tytul }}</strong><br>
+                            Autor: {{ rez.egzemplarz.ksiazka.autor }}<br>
+                            Zarezerwowano: {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}
+                        </div>
+                        <button onclick="location.href='{% url 'anuluj_rezerwacje' rez.id %}'" 
+                                class="btn-zwroc">
+                            Zwracam
+                        </button>
                     </div>
                 {% endfor %}
             {% else %}
-                <p>Nie masz jeszcze żadnych rezerwacji.</p>
+                <p>Twój koszyk rezerwacji jest pusty.</p>
             {% endif %}
 
+        {% elif active_tab == 'wypozyczenia' %}
+            <h2>Moje wypożyczenia</h2>
+            <p>(Tutaj później pokażemy aktywne wypożyczenia)</p>
+
         {% elif active_tab == 'dane' %}
-            <h1>Moje Dane Osobowe</h1>
-            <div class="dane-box">
-                <p><strong>Username:</strong> {{ user.username }}</p>
-                <p><strong>Email:</strong> {{ user.email|default:"Nie podano" }}</p>
-                <p><strong>Imię i Nazwisko:</strong> {{ user.get_full_name|default:"Nie podano" }}</p>
-                <br>
-                <a href="#" class="btn-edit">✏️ Zmień dane osobowe</a>
-            </div>
+            <h2>Moje dane osobowe</h2>
+            <p>Tu będą ustawienia konta (do zrobienia w kolejnym kroku).</p>
 
         {% elif active_tab == 'haslo' %}
-            <h1>Zmiana Hasła</h1>
-            <p>Tutaj będzie formularz zmiany hasła.</p>
+            <h2>Zmiana hasła</h2>
+            <p>Tu będzie formularz zmiany hasła (do zrobienia później).</p>
         {% endif %}
-
+        
     </div>
 </div>
 {% endblock %}
