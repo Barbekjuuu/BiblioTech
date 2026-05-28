@@ -3,21 +3,20 @@
 {% block title %}{{ ksiazka.tytul }}{% endblock %}
 
 {% block content %}
-    <p><a href="{% url 'katalog' %}">← Powrót do katalogu</a></p>
+    <p><a href="{% url 'katalog' %}" class="back-link">← Powrót do katalogu</a></p>
 
-    <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; max-width: 1100px;">
+    <div class="book-detail">
         
         <!-- Okładka książki -->
-        <div>
+        <div class="book-cover">
             <img src="{{ ksiazka.okladka_url }}" 
                  alt="{{ ksiazka.tytul }}"
-                 onerror="this.src='/static/images/cover.png';"
-                 style="max-width: 340px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+                 onerror="this.src='/static/images/cover.png';">
         </div>
 
         <!-- Główna treść -->
-        <div style="flex: 1; min-width: 300px;">
-            <h1 style="margin-top: 0;">{{ ksiazka.tytul }}</h1>
+        <div class="book-info">
+            <h1>{{ ksiazka.tytul }}</h1>
             
             <p><strong>Autor:</strong> {{ ksiazka.autor }}</p>
             <p><strong>Gatunek:</strong> {{ ksiazka.gatunek }}</p>
@@ -25,12 +24,12 @@
             <p><strong>Data wydania:</strong> {{ ksiazka.data_wydania|date:"d.m.Y" }}</p>
 
             <h3>Opis książki</h3>
-            <p style="line-height: 1.8; font-size: 1.05rem;">{{ ksiazka.opis|linebreaks }}</p>
+            <p class="book-description">{{ ksiazka.opis|linebreaks }}</p>
 
             <h3>Dostępne egzemplarze</h3>
             {% for egz in ksiazka.egzemplarze.all %}
-                <div style="background: #2a2a2b; padding: 15px; margin: 10px 0; border-radius: 10px; border-left: 5px solid #9e8c46;">
-                    {{ egz.get_status_display }}
+                <div class="exemplar-item">
+                    <span>{{ egz.get_status_display }}</span>
                     
                     {% if user.is_authenticated and egz.status == 'dostepny' %}
                         <a href="{% url 'dodaj_do_koszyka' egz.id %}" 
@@ -41,7 +40,7 @@
                     {% endif %}
                 </div>
             {% empty %}
-                <p style="color: #f87171;">Obecnie brak dostępnych egzemplarzy.</p>
+                <p class="no-exemplars">Obecnie brak dostępnych egzemplarzy.</p>
             {% endfor %}
         </div>
     </div>
