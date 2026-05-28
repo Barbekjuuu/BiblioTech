@@ -221,75 +221,6 @@ nav a:hover {
    ============================================= */
 .profile-container {
     display: flex;
-    gap: 0;
-    max-width: 1350px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-}
-
-.profile-sidebar {
-    width: 310px;
-    background-image: url('/static/images/header-bg.png');
-    background-size: cover;
-    background-position: center;
-    background-color: rgba(26, 32, 44, 0.93);
-    background-blend-mode: multiply;
-    padding: 40px 25px;
-    border-right: 1px solid rgba(158, 140, 70, 0.4);
-    min-height: 680px;
-}
-
-.profile-sidebar h2 {
-    color: #9e8c46;
-    font-size: 2.1rem;
-    margin: 0 0 35px 0;
-    text-align: center;
-    font-family: 'Great Vibes', cursive;
-    letter-spacing: 1.5px;
-}
-
-.sidebar-tab {
-    display: block;
-    padding: 18px 22px;
-    margin-bottom: 12px;
-    color: #e2e8f0;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1.08rem;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-
-.sidebar-tab:hover,
-.sidebar-tab.active {
-    background: rgba(158, 140, 70, 0.4);
-    color: #fcd34d;
-    border-color: #9e8c46;
-    transform: translateX(8px);
-}
-
-.profile-content {
-    flex: 1;
-    background-image: url('/static/images/background.png');
-    background-size: cover;
-    background-position: center;
-    background-color: rgba(17, 24, 39, 0.9);
-    background-blend-mode: multiply;
-    padding: 45px;
-    min-height: 680px;
-}
-/* =============================================
-   PROFIL UŻYTKOWNIKA
-   ============================================= */
-
-.profile-container {
-    display: flex;
     gap: 30px;
     max-width: 1280px;
     margin: 2rem auto;
@@ -297,14 +228,21 @@ nav a:hover {
     min-height: 70vh;
 }
 
-/* Lewy sidebar */
+.profile-sidebar,
+.profile-content {
+    background-image: url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(26, 32, 44, 0.85);
+    background-blend-mode: multiply;
+    border: 1px solid #4b5563;
+    border-radius: 12px;
+}
+
 .profile-sidebar {
     width: 280px;
-    background: rgba(26, 32, 44, 0.85);
-    border-radius: 12px;
     padding: 2rem 1.5rem;
     height: fit-content;
-    border: 1px solid #4b5563;
 }
 
 .profile-sidebar h2 {
@@ -332,13 +270,9 @@ nav a:hover {
     font-weight: 600;
 }
 
-/* Główna zawartość profilu */
 .profile-content {
     flex: 1;
-    background: rgba(26, 32, 44, 0.85);
-    border-radius: 12px;
     padding: 2rem;
-    border: 1px solid #4b5563;
 }
 
 .profile-content h2 {
@@ -348,45 +282,62 @@ nav a:hover {
     padding-bottom: 10px;
 }
 
-/* Element rezerwacji / wypożyczenia */
+/* =============================================
+   ELEMENTY REZERWACJI / KOSZYK
+   ============================================= */
 .reservation-item {
-    background: rgba(42, 42, 43, 0.9);
+    background: rgba(42, 42, 43, 0.92);
     border: 1px solid #4b5563;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 1.4rem;
     margin-bottom: 1.2rem;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    transition: all 0.3s;
+    gap: 20px;
+    transition: all 0.3s ease;
 }
 
 .reservation-item:hover {
     border-color: #9e8c46;
+    transform: translateY(-4px);
+}
+
+.reservation-item img {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    width: 110px;
+    height: 150px;
+    object-fit: cover;
+}
+
+/* =============================================
+   PRZYCISKI "WYPOŻYCZ" - ulepszona wersja
+   ============================================= */
+
+.btn-wypozycz {
+    background: linear-gradient(135deg, #9e8c46, #b89e5c);
+    color: #1e2937;
+    border: none;
+    padding: 11px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(158, 140, 70, 0.3);
+    font-size: 0.98rem;
+}
+
+.btn-wypozycz:hover {
+    background: linear-gradient(135deg, #fcd34d, #facc15);
     transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(158, 140, 70, 0.5);
+    color: #1e2937;
 }
 
-/* Złoty pasek oddzielający */
-.reservation-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, transparent, #9e8c46, transparent);
-    margin-top: -1.4rem;
-}
-
-.reservation-info {
-    flex: 1;
-}
-
-.reservation-info strong {
-    color: #e2e8f0;
-    font-size: 1.1rem;
-}
-
-/* Złoty przycisk "Zwracam" */
+/* Złoty przycisk "Zwracam" / Anuluj */
 .btn-zwroc {
     background: #9e8c46;
     color: #1e2937;
@@ -396,51 +347,9 @@ nav a:hover {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
-    align-self: flex-start;
 }
 
 .btn-zwroc:hover {
     background: #fcd34d;
     transform: scale(1.05);
-}
-
-/* =============================================
-   PRZYCISKI "WYPOŻYCZ"
-   ============================================= */
-
-.btn-wypozycz {
-    background: #9e8c46;
-    color: #1e2937;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 8px;
-    transition: all 0.3s ease;
-}
-
-.btn-wypozycz:hover {
-    background: #fcd34d;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(158, 140, 70, 0.4);
-}
-
-/* Dodatkowe style dla koszyka */
-.reservation-item {
-    background: rgba(42, 42, 43, 0.9);
-    border: 1px solid #4b5563;
-    border-radius: 12px;
-    padding: 1.2rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.reservation-item img {
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
