@@ -403,3 +403,44 @@ nav a:hover {
     background: #fcd34d;
     transform: scale(1.05);
 }
+
+/* =============================================
+   PRZYCISKI "WYPOŻYCZ"
+   ============================================= */
+
+.btn-wypozycz {
+    background: #9e8c46;
+    color: #1e2937;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-wypozycz:hover {
+    background: #fcd34d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(158, 140, 70, 0.4);
+}
+
+/* Dodatkowe style dla koszyka */
+.reservation-item {
+    background: rgba(42, 42, 43, 0.9);
+    border: 1px solid #4b5563;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.reservation-item img {
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
