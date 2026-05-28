@@ -13,7 +13,6 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <!-- Twoje logo -->
                 <img src="{% static 'images/logo.png' %}" 
                      alt="BiblioTech Logo" 
                      class="custom-logo">
@@ -23,6 +22,8 @@
             <nav>
                 <a href="/">Strona główna</a>
                 <a href="/katalog/">Katalog</a>
+                <a href="{% url 'koszyk' %}">🛒 Koszyk</a>
+                
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' %}">Mój Profil</a>
                     <span>Witaj, {{ user.username }}!</span>
