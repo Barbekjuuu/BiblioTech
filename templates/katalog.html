@@ -41,6 +41,19 @@
                         <p class="author">{{ ksiazka.autor }}</p>
                         <p class="genre">{{ ksiazka.gatunek }} • {{ ksiazka.get_jezyk_display }}</p>
                         
+                        <!-- Liczba dostępnych egzemplarzy -->
+                        {% with available=0 %}
+                            {% for egz in ksiazka.egzemplarze.all %}
+                                {% if egz.status == 'dostepny' %}
+                                    {% with available=available|add:1 %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                            <p class="available-count">
+                                Dostępne: <strong>{{ available }}</strong>
+                            </p>
+                        {% endwith %}
+                        
                         {% if user.is_authenticated %}
                             {% for egz in ksiazka.egzemplarze.all %}
                                 {% if egz.status == 'dostepny' %}
@@ -49,6 +62,7 @@
                                        onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz dodać tę książkę do koszyka?')">
                                         Wypożycz
                                     </a>
+                                    {% break %}   <!-- tylko jeden przycisk -->
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
