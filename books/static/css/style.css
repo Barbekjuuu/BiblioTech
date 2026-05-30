@@ -149,7 +149,7 @@ nav a:hover {
 }
 
 /* =============================================
-   KARTY KSIĄŻEK
+   KARTY KSIĄŻEK - KLIKALNY KAFELEK
    ============================================= */
 .container {
     max-width: 1280px;
@@ -175,6 +175,12 @@ nav a:hover {
     border-radius: 10px;
 }
 
+.ksiazka-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .ksiazka {
     background-image: url('/static/images/header-bg.png');
     background-size: cover;
@@ -190,11 +196,13 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .ksiazka:hover {
     transform: translateY(-8px);
     border-color: #9e8c46;
+    box-shadow: 0 12px 30px rgba(158, 140, 70, 0.3);
 }
 
 .ksiazka img {
@@ -311,7 +319,7 @@ nav a:hover {
 }
 
 /* =============================================
-   PRZYCISKI "WYPOŻYCZ" - ulepszona wersja (spójna z projektem)
+   PRZYCISKI "WYPOŻYCZ"
    ============================================= */
 
 .btn-wypozycz {
