@@ -526,6 +526,122 @@ nav a:hover { color: #fcd34d; }
     box-shadow: 0 14px 28px rgba(255, 214, 92, 0.32);
 }
 
+/* PROFIL */
+.profile-container {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 2rem;
+    max-width: 1240px;
+    margin: 2.5rem auto 4rem;
+    padding: 0 1rem;
+}
+
+.profile-sidebar {
+    background-image: linear-gradient(rgba(10, 12, 22, 0.84), rgba(10, 12, 22, 0.84)), url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    border: 1px solid rgba(252, 211, 77, 0.2);
+    border-radius: 24px;
+    padding: 1.6rem 1.4rem;
+    box-shadow: 0 24px 45px rgba(0, 0, 0, 0.35);
+    min-height: 420px;
+}
+
+.profile-sidebar h2 {
+    margin: 0 0 1.4rem;
+    color: #f9e7ad;
+    font-size: 1.9rem;
+}
+
+.sidebar-tab {
+    display: block;
+    padding: 0.95rem 1rem;
+    margin-bottom: 0.8rem;
+    border-radius: 14px;
+    color: #d7caa3;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.sidebar-tab:hover,
+.sidebar-tab.active {
+    color: #f8e779;
+    background: rgba(252, 211, 77, 0.12);
+    border-color: rgba(252, 211, 77, 0.3);
+}
+
+.profile-content {
+    background-image: linear-gradient(rgba(10, 12, 22, 0.76), rgba(10, 12, 22, 0.76)), url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
+    border: 1px solid rgba(252, 211, 77, 0.2);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+    min-height: 420px;
+}
+
+.profile-content h1 {
+    margin-top: 0;
+    color: #f8e7ad;
+    font-size: 2.25rem;
+}
+
+.rezerwacja-card,
+.dane-box {
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(252, 211, 77, 0.22);
+    border-radius: 18px;
+    padding: 1.35rem 1.4rem;
+    margin-top: 1.2rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.rezerwacja-card h3,
+.dane-box p {
+    color: #f1e7b0;
+}
+
+.rezerwacja-card p,
+.dane-box p {
+    margin: 0.55rem 0;
+    color: #d7d3c1;
+}
+
+.cancel-btn,
+.btn-edit {
+    display: inline-block;
+    margin-top: 1.2rem;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f3d45e 0%, #d8b043 100%);
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.cancel-btn:hover,
+.btn-edit:hover {
+    opacity: 0.96;
+}
+
+@media (max-width: 950px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar,
+    .profile-content {
+        min-height: auto;
+    }
+}
+
 .koszyk-empty {
     text-align: center;
     padding: 2.5rem 1rem;
