@@ -3,18 +3,15 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <h1>Katalog książek</h1>
-
-    <!--
-        PRZYCISK FILTRÓW - Ukrywa/wyświetla panel filtrów.
-        Dzięki temu strona nie jest za długa, a filtry są dostępne na żądanie.
-    -->
-    <button onclick="toggleFilters()" class="btn-filter">
-        🔍 Pokaż / Ukryj filtry
-    </button>
+    <div class="catalog-header">
+        <h1>Katalog książek</h1>
+        <button onclick="toggleFilters()" class="btn-filter">
+            🔍 Filtry
+        </button>
+    </div>
 
     <!-- Sekcja filtrów -->
-    <div id="filters-section" style="display: none; margin: 20px 0 30px 0; background: #2a2a2b; padding: 20px; border-radius: 10px;">
+    <div id="filters-section" class="filters-panel" style="display: none;">
         <strong>Filtruj po gatunku:</strong><br>
         {% for gatunek in gatunki %}
             <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_jezyk %}jezyk={{ selected_jezyk }}&{% endif %}gatunek={{ gatunek.id }}{% if per_page %}&per_page={{ per_page }}{% endif %}"
