@@ -404,7 +404,11 @@ nav a:hover { color: #fcd34d; }
     max-width: 980px;
     margin: 2rem auto 4rem;
     padding: 1.8rem;
-    background: rgba(15, 23, 42, 0.88);
+    background-image: linear-gradient(rgba(10, 12, 22, 0.76), rgba(10, 12, 22, 0.76)), url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
     border: 1px solid rgba(252, 211, 77, 0.28);
     border-radius: 20px;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
@@ -428,7 +432,11 @@ nav a:hover { color: #fcd34d; }
 }
 
 .koszyk-item {
-    background: rgba(31, 41, 55, 0.95);
+    background-image: linear-gradient(rgba(10, 12, 22, 0.74), rgba(10, 12, 22, 0.74)), url('/static/images/header-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;
     border: 1px solid rgba(252, 211, 77, 0.8);
     border-radius: 16px;
     padding: 1.25rem 1.4rem;
