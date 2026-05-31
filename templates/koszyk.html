@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Koszyk - BiblioTech{% endblock %}
+
+{% block content %}
+<div class="koszyk-container">
+
+    <h1>🛒 Twój Koszyk</h1>
+    <p class="koszyk-subtitle">Książki gotowe do wypożyczenia</p>
+
+    {% if egzemplarze %}
+        <div class="koszyk-list">
+            {% for egz in egzemplarze %}
+                <div class="koszyk-item">
+                    <div class="koszyk-item-row">
+                        <div class="koszyk-info">
+                            <h3>{{ egz.ksiazka.tytul }}</h3>
+                            <p><strong>Autor:</strong> {{ egz.ksiazka.autor }}</p>
+                            <p><strong>Gatunek:</strong> {{ egz.ksiazka.gatunek }}</p>
+                            <p><strong>Język:</strong> {{ egz.ksiazka.get_jezyk_display }}</p>
+                        </div>
+
+                        <div class="koszyk-actions">
+                            <form action="{% url 'usun_z_koszyka' egz.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-usun" title="Usuń książkę z koszyka">Usuń</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="koszyk-summary">
+            <div class="koszyk-summary-text">
+                <p><strong>Liczba książek w koszyku:</strong> {{ egzemplarze.count }}</p>
+            </div>
+            <form action="{% url 'zatwierdz_koszyk' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-zatwierdz" 
+                        onclick="return confirm('Czy na pewno chcesz zatwierdzić wypożyczenie?')">
+                    ✓ Zatwierdź wypożyczenie
+                </button>
+            </form>
+        </div>
+
+    {% else %}
+        <div class="koszyk-empty">
+            <p>Twój koszyk jest pusty.</p>
+            <a href="{% url 'katalog' %}" class="btn-catalog">Przejdź do katalogu</a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

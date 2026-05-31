@@ -14,6 +14,7 @@ urlpatterns = [
     # Koszyk i wypożyczenia
     path('koszyk/', views.koszyk, name='koszyk'),
     path('koszyk/dodaj/<int:egzemplarz_id>/', views.dodaj_do_koszyka, name='dodaj_do_koszyka'),
+    path('koszyk/usun/<int:egzemplarz_id>/', views.usun_z_koszyka, name='usun_z_koszyka'),
     path('koszyk/zatwierdz/', views.zatwierdz_koszyk, name='zatwierdz_koszyk'),
     
     # Profil i zarządzanie

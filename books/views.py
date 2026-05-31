@@ -202,3 +202,16 @@ def anuluj_rezerwacje(request, rezerwacja_id):
     
     messages.success(request, 'Rezerwacja została pomyślnie anulowana.')
     return redirect('profile')
+
+
+# ====================== NOWA FUNKCJA ======================
+
+@login_required
+def usun_z_koszyka(request, egzemplarz_id):
+    """Usuwa egzemplarz z koszyka"""
+    koszyk = request.session.get('koszyk', [])
+    if egzemplarz_id in koszyk:
+        koszyk.remove(egzemplarz_id)
+        request.session['koszyk'] = koszyk
+        messages.success(request, 'Książka została usunięta z koszyka.')
+    return redirect('koszyk')

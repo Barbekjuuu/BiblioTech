@@ -24,30 +24,27 @@
     <div class="container">
         <h2>Ostatnio dodane książki</h2>
 
-        <div class="books-grid">
-            {% for ksiazka in ostatnie_ksiazki %}
-                <div class="ksiazka">
-                    
-                    {# === FALLBACK OKŁADKI - DODANE TUTAJ === #}
+        <div class="latest-books-roller">
+            {% for ksiazka in ostatnie_ksiazki|slice:":8" %}
+                <a href="{% url 'ksiazka_detail' ksiazka.id %}" class="latest-book-card">
                     <img src="{{ ksiazka.okladka_url }}" 
                          alt="{{ ksiazka.tytul }}"
                          onerror="this.src='/static/images/cover.png';">
-                    {# ==================================== #}
 
                     <div class="ksiazka-content">
                         <h3>{{ ksiazka.tytul }}</h3>
                         <p class="author">{{ ksiazka.autor }}</p>
                         <p class="genre">{{ ksiazka.gatunek }}</p>
-                        <a href="{% url 'ksiazka_detail' ksiazka.id %}" class="btn-detail">Szczegóły →</a>
+                        <span class="details-tag">Szczegóły →</span>
                     </div>
-                </div>
+                </a>
             {% empty %}
                 <p>Brak książek w bazie.</p>
             {% endfor %}
         </div>
 
         <p class="text-center">
-            <a href="/katalog/" class="catalog-link">Przejdź do pełnego katalogu →</a>
+            <a href="/katalog/" class="catalog-link">Przejdź do pełnego katalogu</a>
         </p>
     </div>
 {% endblock %}
