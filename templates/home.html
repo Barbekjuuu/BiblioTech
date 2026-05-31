@@ -3,7 +3,7 @@
 {% block title %}BiblioTech - Biblioteka Online{% endblock %}
 
 {% block content %}
-    <!-- Sekcja hero z wyszukiwarką -->
+    {# Sekcja hero z wyszukiwarką #}
     <div class="hero">
         <h1>Witaj w BiblioTech</h1>
         <p>Odkrywaj, rezerwuj i czytaj – wszystko w jednym miejscu</p>
@@ -20,7 +20,7 @@
         </form>
     </div>
 
-    <!-- Sekcja ostatnich książek -->
+    {# Sekcja ostatnich książek #}
     <div class="container">
         <h2>Ostatnio dodane książki</h2>
 
@@ -28,11 +28,11 @@
             {% for ksiazka in ostatnie_ksiazki %}
                 <div class="ksiazka">
                     
-                    <!-- === FALLBACK OKŁADKI - DODANE TUTAJ === -->
+                    {# === FALLBACK OKŁADKI - DODANE TUTAJ === #}
                     <img src="{{ ksiazka.okladka_url }}" 
                          alt="{{ ksiazka.tytul }}"
                          onerror="this.src='/static/images/cover.png';">
-                    <!-- ==================================== -->
+                    {# ==================================== #}
 
                     <div class="ksiazka-content">
                         <h3>{{ ksiazka.tytul }}</h3>

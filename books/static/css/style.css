@@ -6,13 +6,11 @@ body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     margin: 0;
     padding: 0;
-    
     background-image: url('/static/images/background.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    
     color: #e2e8f0;
     min-height: 100vh;
 }
@@ -20,17 +18,13 @@ body {
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(17, 24, 39, 0.75);
     z-index: -1;
 }
 
-/* =============================================
-   NAGŁÓWEK
-   ============================================= */
+/* NAGŁÓWEK */
 header {
     background-image: url('/static/images/header-bg.png');
     background-size: cover;
@@ -41,7 +35,6 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    
     background-color: rgba(26, 32, 44, 0.78);
     background-blend-mode: multiply;
 }
@@ -54,22 +47,13 @@ header {
     align-items: center;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.custom-logo {
-    height: 62px;
-    width: auto;
-    border-radius: 6px;
-}
+.logo { display: flex; align-items: center; gap: 15px; }
+.custom-logo { height: 55px; width: auto; border-radius: 6px; }
 
 .logo h1 {
     margin: 0;
     font-family: 'Great Vibes', cursive;
-    font-size: 2.8rem;
+    font-size: 2.65rem;
     font-weight: 400;
     color: oklch(55.334% 0.08465 92.419);
     letter-spacing: 2px;
@@ -83,289 +67,192 @@ nav a {
     font-weight: 500;
 }
 
-nav a:hover {
-    color: #fcd34d;
-}
+nav a:hover { color: #fcd34d; }
 
-/* =============================================
-   SEKCJA HERO
-   ============================================= */
-.hero {
-    background-image: url('/static/images/header-bg.png');
-    background-size: cover;
-    background-position: center;
-    padding: 140px 20px;
-    text-align: center;
-    color: white;
-    position: relative;
-    margin-bottom: 4rem;
-    
-    background-color: rgba(26, 32, 44, 0.65);
-    background-blend-mode: multiply;
-}
-
-.hero h1, .hero p, .search-form {
-    position: relative;
-    z-index: 1;
-}
-
-.hero h1 {
-    font-size: 2.8rem;
-    margin-bottom: 16px;
-    color: #9e8c46;
-    font-weight: 400;
-}
-
-.hero p {
-    font-size: 1.3rem;
-    margin-bottom: 45px;
-    opacity: 0.95;
-}
-
-.search-form {
-    max-width: 650px;
-    margin: 0 auto;
-    display: flex;
-}
-
-.search-form input {
-    flex: 1;
-    padding: 18px 22px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 8px 0 0 8px;
-    background: white;
-    color: #1e2937;
-}
-
-.search-form button {
-    padding: 18px 36px;
-    background: #9e8c46;
-    color: #1e2937;
-    border: none;
-    border-radius: 0 8px 8px 0;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* =============================================
-   KARTY KSIĄŻEK - KLIKALNY KAFELEK
-   ============================================= */
+/* KONTENER I KARTY */
 .container {
     max-width: 1280px;
     margin: 3rem auto;
     padding: 0 2rem;
 }
 
-.books-grid {
+/*
+    UKŁAD STRONY SZCZEGÓŁÓW KSIĄŻKI
+    - .book-detail: kontener poziomy dla sekcji okładka + dane
+    - .book-cover: lewa kolumna z grafiką okładki
+    - .book-info: prawa kolumna z tekstowym opisem i przyciskiem
+    - responsywność: na urządzeniach mobilnych zmienia układ na kolumnowy
+*/
+.book-detail {
     display: flex;
-    gap: 25px;
-    overflow-x: auto;
-    padding-bottom: 20px;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    gap: 40px;
+    align-items: flex-start;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
-.books-grid::-webkit-scrollbar {
-    height: 8px;
+.book-cover {
+    flex: 0 0 320px;
+    max-width: 320px;
+    min-width: 240px;
 }
 
-.books-grid::-webkit-scrollbar-thumb {
-    background: #9e8c46;
-    border-radius: 10px;
+.book-cover img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+}
+
+.book-info {
+    flex: 1;
+    min-width: 280px;
+}
+
+.book-info h1 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 2.2rem;
+}
+
+.book-info p,
+.book-info h3 {
+    margin-bottom: 1rem;
+}
+
+.book-description {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .book-detail {
+        flex-direction: column;
+    }
+
+    .book-cover {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+    padding-bottom: 60px;
+}
+
+.filter-link {
+    color: #cbd5e1;
+    text-decoration: none;
+}
+
+.filter-link.active {
+    font-weight: bold;
+    color: #9e8c46;
 }
 
 .ksiazka-link {
     text-decoration: none;
     color: inherit;
     display: block;
+    height: 100%;
+    cursor: pointer;
 }
 
 .ksiazka {
     background-image: url('/static/images/header-bg.png');
     background-size: cover;
     background-position: center;
-    background-color: rgba(26, 32, 44, 0.65);
+    background-color: rgba(26, 32, 44, 0.75);
     background-blend-mode: multiply;
     
-    min-width: 260px;
     border: 1px solid #4b5563;
     border-radius: 12px;
-    padding: 1.4rem;
+    padding: 1rem;
     box-shadow: 0 6px 20px rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
     cursor: pointer;
+    height: 100%;
+    min-height: 430px;           /* bardzo mocne wymuszenie */
+}
+
+.ksiazka-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .ksiazka:hover {
     transform: translateY(-8px);
     border-color: #9e8c46;
-    box-shadow: 0 12px 30px rgba(158, 140, 70, 0.3);
 }
 
 .ksiazka img {
     width: 100%;
-    height: 180px;
+    height: 130px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 12px;
 }
 
-.ksiazka-content h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.2rem;
-    color: #e2e8f0;
-}
-
-.ksiazka-content .author {
-    color: #9e8c46;
-    font-weight: 500;
-}
-
-/* Liczba dostępnych egzemplarzy */
+/* Liczba dostępnych */
 .available-count {
-    color: #9e8c46;
-    font-weight: 500;
-    margin: 8px 0 12px 0;
+    color: #fcd34d;
+    font-weight: 600;
+    margin: 8px 0 10px 0;
     font-size: 0.95rem;
-}
-
-/* =============================================
-   PROFIL - elegancki sidebar
-   ============================================= */
-.profile-container {
-    display: flex;
-    gap: 30px;
-    max-width: 1280px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-    min-height: 70vh;
-}
-
-.profile-sidebar,
-.profile-content {
-    background-image: url('/static/images/header-bg.png');
-    background-size: cover;
-    background-position: center;
-    background-color: rgba(26, 32, 44, 0.85);
-    background-blend-mode: multiply;
-    border: 1px solid #4b5563;
-    border-radius: 12px;
-}
-
-.profile-sidebar {
-    width: 280px;
-    padding: 2rem 1.5rem;
-    height: fit-content;
-}
-
-.profile-sidebar h2 {
-    color: #9e8c46;
     text-align: center;
-    margin-bottom: 1.5rem;
-    font-family: 'Great Vibes', cursive;
-    font-size: 2rem;
+    background: rgba(0,0,0,0.4);
+    padding: 5px 10px;
+    border-radius: 6px;
 }
 
-.sidebar-tab {
-    display: block;
-    padding: 12px 18px;
+/* Przyciski na dole */
+.btn-wypozycz, .btn-rezerwuj {
+    background: linear-gradient(135deg, #9e8c46, #b89e5c) !important;
+    color: #1e2937 !important;
+    border: none !important;
+    padding: 11px 16px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    display: block !important;
+    margin-top: auto !important;
+    text-align: center !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.95rem !important;
+}
+
+.btn-wypozycz:hover, .btn-rezerwuj:hover {
+    background: linear-gradient(135deg, #fcd34d, #facc15) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* PAGINACJA */
+.pagination {
+    text-align: center;
+    margin: 50px 0 70px 0;
+}
+
+.btn-page {
+    display: inline-block;
+    padding: 10px 18px;
+    margin: 0 5px;
+    background: #2a2a2b;
     color: #cbd5e1;
     text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    transition: all 0.3s;
-}
-
-.sidebar-tab:hover,
-.sidebar-tab.active {
-    background: #9e8c46;
-    color: #1e2937;
-    font-weight: 600;
-}
-
-.profile-content {
-    flex: 1;
-    padding: 2rem;
-}
-
-.profile-content h2 {
-    color: #9e8c46;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #9e8c46;
-    padding-bottom: 10px;
-}
-
-/* =============================================
-   ELEMENTY REZERWACJI / KOSZYK
-   ============================================= */
-.reservation-item {
-    background: rgba(42, 42, 43, 0.92);
+    border-radius: 6px;
     border: 1px solid #4b5563;
-    border-radius: 12px;
-    padding: 1.4rem;
-    margin-bottom: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
-.reservation-item:hover {
-    border-color: #9e8c46;
-    transform: translateY(-4px);
-}
-
-.reservation-item img {
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-    width: 110px;
-    height: 150px;
-    object-fit: cover;
-}
-
-/* =============================================
-   PRZYCISKI "WYPOŻYCZ"
-   ============================================= */
-
-.btn-wypozycz {
-    background: linear-gradient(135deg, #9e8c46, #b89e5c);
-    color: #1e2937;
-    border: none;
-    padding: 12px 26px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(158, 140, 70, 0.4);
-    font-size: 1rem;
-}
-
-.btn-wypozycz:hover {
-    background: linear-gradient(135deg, #fcd34d, #facc15);
-    transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 8px 20px rgba(158, 140, 70, 0.5);
-    color: #1e2937;
-}
-
-/* Złoty przycisk "Zwracam" / Anuluj */
-.btn-zwroc {
+.btn-page:hover {
     background: #9e8c46;
     color: #1e2937;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn-zwroc:hover {
-    background: #fcd34d;
-    transform: scale(1.05);
 }

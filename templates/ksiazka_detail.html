@@ -3,18 +3,34 @@
 {% block title %}{{ ksiazka.tytul }}{% endblock %}
 
 {% block content %}
+    {% comment %}
+        STRONA SZCZEGÓŁÓW KSIĄŻKI
+
+        Ten szablon wyświetla pełne informacje o wybranej książce.
+        - W lewym panelu znajduje się grafika okładki.
+        - W prawym panelu wyświetlane są dane książki, opis oraz przycisk akcji.
+        - Przyciski są widoczne tylko dla zalogowanych użytkowników.
+        - Widok używa zmiennych przekazanych z widoku `katalog` w `books/views.py`.
+    {% endcomment %}
+
     <p><a href="{% url 'katalog' %}" class="back-link">← Powrót do katalogu</a></p>
 
+    {% comment %}
+        UKŁAD STRONY SZCZEGÓŁÓW KSIĄŻKI
+        - .book-detail: kontener poziomy z dwiema kolumnami
+        - .book-cover: lewa kolumna z okładką
+        - .book-info: prawa kolumna z tekstem i przyciskiem
+    {% endcomment %}
     <div class="book-detail">
         
-        <!-- Okładka książki -->
+        {% comment %} OKŁADKA {% endcomment %}
         <div class="book-cover">
-            <img src="{{ ksiazka.okladka_url }}" 
+            <img src="{{ ksiazka.okladka_url }}"
                  alt="{{ ksiazka.tytul }}"
                  onerror="this.src='/static/images/cover.png';">
         </div>
 
-        <!-- Główna treść -->
+        {% comment %} INFORMACJE O KSIĄŻCE {% endcomment %}
         <div class="book-info">
             <h1>{{ ksiazka.tytul }}</h1>
             
@@ -26,22 +42,27 @@
             <h3>Opis książki</h3>
             <p class="book-description">{{ ksiazka.opis|linebreaks }}</p>
 
-            <h3>Dostępne egzemplarze</h3>
-            {% for egz in ksiazka.egzemplarze.all %}
-                <div class="exemplar-item">
-                    <span>{{ egz.get_status_display }}</span>
-                    
-                    {% if user.is_authenticated and egz.status == 'dostepny' %}
-                        <a href="{% url 'dodaj_do_koszyka' egz.id %}" 
-                           class="btn-wypozycz"
-                           onclick="return confirm('Czy chcesz dodać tę książkę do koszyka wypożyczeń?')">
-                            Wypożycz
-                        </a>
-                    {% endif %}
-                </div>
-            {% empty %}
-                <p class="no-exemplars">Obecnie brak dostępnych egzemplarzy.</p>
-            {% endfor %}
+            <h3>Dostępne egzemplarze: <strong>{{ available_count|default:0 }}</strong></h3>
+
+            {% if user.is_authenticated %}
+                {% if available_count > 0 and first_available_id %}
+                    {% comment %} Przycisk wypożyczenia: widoczny gdy są dostępne egzemplarze {% endcomment %}
+                    <a href="{% url 'dodaj_do_koszyka' first_available_id %}" 
+                       class="btn-wypozycz"
+                       onclick="return confirm('Czy chcesz dodać tę książkę do koszyka?')">
+                        Wypożycz
+                    </a>
+                {% else %}
+                    {% comment %} Przycisk rezerwacji: widoczny gdy brak dostępnych egzemplarzy. Tutaj tylko komunikat, bo rezerwacja jest w przygotowaniu. {% endcomment %}
+                    <a href="#" class="btn-rezerwuj"
+                       onclick="return confirm('Czy chcesz zarezerwować tę książkę?')">
+                        Zarezerwuj
+                    </a>
+                {% endif %}
+            {% else %}
+                {% comment %} Komunikat dla niezalogowanych użytkowników {% endcomment %}
+                <p style="color: #f87171;">Zaloguj się, aby wypożyczyć lub zarezerwować.</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

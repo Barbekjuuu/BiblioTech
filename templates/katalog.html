@@ -4,73 +4,141 @@
 
 {% block content %}
     <h1>Katalog książek</h1>
-    
-    <!-- Filtry -->
-    <div style="margin-bottom: 25px; background: #2a2a2b; padding: 20px; border-radius: 10px;">
+
+    <!--
+        PRZYCISK FILTRÓW - Ukrywa/wyświetla panel filtrów.
+        Dzięki temu strona nie jest za długa, a filtry są dostępne na żądanie.
+    -->
+    <button onclick="toggleFilters()" class="btn-filter">
+        🔍 Pokaż / Ukryj filtry
+    </button>
+
+    <!-- Sekcja filtrów -->
+    <div id="filters-section" style="display: none; margin: 20px 0 30px 0; background: #2a2a2b; padding: 20px; border-radius: 10px;">
         <strong>Filtruj po gatunku:</strong><br>
         {% for gatunek in gatunki %}
-            <a href="?{% if query %}q={{ query }}&{% endif %}gatunek={{ gatunek.id }}" 
-               style="{% if selected_gatunek == gatunek.id|stringformat:'s' %}font-weight:bold; color:#9e8c46;{% endif %}">
+            <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_jezyk %}jezyk={{ selected_jezyk }}&{% endif %}gatunek={{ gatunek.id }}{% if per_page %}&per_page={{ per_page }}{% endif %}"
+               class="filter-link {% if selected_gatunek == gatunek.id|stringformat:'s' %}active{% endif %}">
                 {{ gatunek.nazwa }}
-            </a> &nbsp;|&nbsp; 
+            </a> &nbsp;|&nbsp;
         {% endfor %}
-        <a href="{% if query %}?q={{ query }}{% else %}/katalog/{% endif %}">Wszystkie</a>
-        
+        <a href="{% url 'katalog' %}{% if query or selected_jezyk or per_page %}?{% endif %}{% if query %}q={{ query }}&{% endif %}{% if selected_jezyk %}jezyk={{ selected_jezyk }}&{% endif %}{% if per_page %}per_page={{ per_page }}{% endif %}">Wszystkie</a>
+
         <br><br>
-        
+
         <strong>Filtruj po języku:</strong><br>
-        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=pl" style="{% if selected_jezyk == 'pl' %}font-weight:bold; color:#9e8c46;{% endif %}">Polski</a> |
-        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=en" style="{% if selected_jezyk == 'en' %}font-weight:bold; color:#9e8c46;{% endif %}">Angielski</a> |
-        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=de" style="{% if selected_jezyk == 'de' %}font-weight:bold; color:#9e8c46;{% endif %}">Niemiecki</a> |
-        <a href="?{% if query %}q={{ query }}&{% endif %}jezyk=fr" style="{% if selected_jezyk == 'fr' %}font-weight:bold; color:#9e8c46;{% endif %}">Francuski</a> |
-        <a href="{% if query %}?q={{ query }}{% else %}/katalog/{% endif %}">Wszystkie języki</a>
+        <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_gatunek %}gatunek={{ selected_gatunek }}&{% endif %}jezyk=pl{% if per_page %}&per_page={{ per_page }}{% endif %}"
+           class="filter-link {% if selected_jezyk == 'pl' %}active{% endif %}">Polski</a> |
+        <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_gatunek %}gatunek={{ selected_gatunek }}&{% endif %}jezyk=en{% if per_page %}&per_page={{ per_page }}{% endif %}"
+           class="filter-link {% if selected_jezyk == 'en' %}active{% endif %}">Angielski</a> |
+        <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_gatunek %}gatunek={{ selected_gatunek }}&{% endif %}jezyk=de{% if per_page %}&per_page={{ per_page }}{% endif %}"
+           class="filter-link {% if selected_jezyk == 'de' %}active{% endif %}">Niemiecki</a> |
+        <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_gatunek %}gatunek={{ selected_gatunek }}&{% endif %}jezyk=fr{% if per_page %}&per_page={{ per_page }}{% endif %}"
+           class="filter-link {% if selected_jezyk == 'fr' %}active{% endif %}">Francuski</a> |
+        <a href="{% url 'katalog' %}{% if query or selected_gatunek or per_page %}?{% endif %}{% if query %}q={{ query }}&{% endif %}{% if selected_gatunek %}gatunek={{ selected_gatunek }}&{% endif %}{% if per_page %}per_page={{ per_page }}{% endif %}">Wszystkie języki</a>
+
+        <br><br>
+
+        <strong>Ile książek na stronę:</strong><br>
+        {% for num in per_page_options %}
+            <a href="{% url 'katalog' %}?{% if query %}q={{ query }}&{% endif %}{% if selected_gatunek %}gatunek={{ selected_gatunek }}&{% endif %}{% if selected_jezyk %}jezyk={{ selected_jezyk }}&{% endif %}per_page={{ num }}"
+               class="filter-link {% if per_page|default:12|add:0 == num|add:0 %}active{% endif %}">
+                {{ num }}
+            </a> &nbsp;|&nbsp;
+        {% endfor %}
     </div>
 
-    <h2>Znaleziono {{ ksiazki.count }} książek</h2>
+    <h2>Znaleziono {{ paginator.count }} książek</h2>
 
+    <!-- Siatka książek -->
     <div class="books-grid">
         {% for ksiazka in ksiazki %}
-            <a href="{% url 'ksiazka_detail' ksiazka.id %}" class="ksiazka-link">
+            <div class="ksiazka-link" data-href="{% url 'ksiazka_detail' ksiazka.id %}" role="link" tabindex="0">
                 <div class="ksiazka">
-                    <img src="{{ ksiazka.okladka_url }}" 
+                    <img src="{{ ksiazka.okladka_url }}"
                          alt="{{ ksiazka.tytul }}"
                          onerror="this.src='/static/images/cover.png';">
-                    
+
                     <div class="ksiazka-content">
                         <h3>{{ ksiazka.tytul }}</h3>
                         <p class="author">{{ ksiazka.autor }}</p>
                         <p class="genre">{{ ksiazka.gatunek }} • {{ ksiazka.get_jezyk_display }}</p>
-                        
-                        <!-- Liczba dostępnych egzemplarzy -->
-                        {% with available=0 %}
-                            {% for egz in ksiazka.egzemplarze.all %}
-                                {% if egz.status == 'dostepny' %}
-                                    {% with available=available|add:1 %}
-                                    {% endwith %}
-                                {% endif %}
-                            {% endfor %}
-                            <p class="available-count">
-                                Dostępne: <strong>{{ available }}</strong>
-                            </p>
-                        {% endwith %}
-                        
+
+                        <p class="available-count">
+                            Dostępne: <strong>{{ ksiazka.available_count|default:0 }}</strong>
+                        </p>
+
                         {% if user.is_authenticated %}
-                            {% for egz in ksiazka.egzemplarze.all %}
-                                {% if egz.status == 'dostepny' %}
-                                    <a href="{% url 'dodaj_do_koszyka' egz.id %}" 
-                                       class="btn-wypozycz"
-                                       onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz dodać tę książkę do koszyka?')">
-                                        Wypożycz
-                                    </a>
-                                    {% break %}   <!-- tylko jeden przycisk -->
-                                {% endif %}
-                            {% endfor %}
+                            {% if ksiazka.available_count > 0 %}
+                                <a href="{% url 'dodaj_do_koszyka' ksiazka.first_available_id %}"
+                                   class="btn-wypozycz"
+                                   onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz dodać tę książkę do koszyka?')">
+                                    Wypożycz
+                                </a>
+                            {% else %}
+                                <a href="#" class="btn-rezerwuj"
+                                   onclick="event.stopImmediatePropagation(); alert('Funkcja rezerwacji w przygotowaniu')">
+                                    Zarezerwuj
+                                </a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
-            </a>
+            </div>
         {% empty %}
             <p>Brak książek spełniających kryteria wyszukiwania.</p>
         {% endfor %}
     </div>
+
+    <!-- PAGINACJA -->
+    {% if ksiazki.paginator.num_pages > 1 %}
+    <div class="pagination">
+        {% if ksiazki.has_previous %}
+            <a href="{% url 'katalog' %}?page={{ ksiazki.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_gatunek %}&gatunek={{ selected_gatunek }}{% endif %}{% if selected_jezyk %}&jezyk={{ selected_jezyk }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}"
+               class="btn-page">← Poprzednia</a>
+        {% endif %}
+
+        <span style="margin: 0 20px; font-weight: 500;">
+            Strona {{ ksiazki.number }} z {{ ksiazki.paginator.num_pages }}
+        </span>
+
+        {% if ksiazki.has_next %}
+            <a href="{% url 'katalog' %}?page={{ ksiazki.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_gatunek %}&gatunek={{ selected_gatunek }}{% endif %}{% if selected_jezyk %}&jezyk={{ selected_jezyk }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}"
+               class="btn-page">Następna →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- JavaScript do rozwijania filtrów + klikania całej karty -->
+    <script>
+        function toggleFilters() {
+            const section = document.getElementById('filters-section');
+            section.style.display = (section.style.display === 'none') ? 'block' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.ksiazka-link').forEach(function(card) {
+                card.addEventListener('click', function(event) {
+                    if (event.target.closest('.btn-wypozycz, .btn-rezerwuj')) {
+                        return;
+                    }
+                    const href = this.getAttribute('data-href');
+                    if (href) {
+                        window.location.href = href;
+                    }
+                });
+
+                card.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        const href = this.getAttribute('data-href');
+                        if (href) {
+                            window.location.href = href;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
 {% endblock %}

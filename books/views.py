@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja
 
 
@@ -21,7 +21,7 @@ def home(request):
 
 
 def katalog(request):
-    """Pełny katalog książek z zaawansowanym wyszukiwaniem i filtrowaniem"""
+    """Pełny katalog książek z paginacją"""
     ksiazki = Ksiazka.objects.all()
     gatunki = Gatunek.objects.all()
     
@@ -42,13 +42,43 @@ def katalog(request):
     if jezyk:
         ksiazki = ksiazki.filter(jezyk=jezyk)
     
+    # Przygotowanie danych dla szablonu
+    ksiazki_z_danymi = []
+    for ksiazka in ksiazki:
+        dostepne = ksiazka.egzemplarze.filter(status='dostepny')
+        available_count = dostepne.count()
+        first_available_id = dostepne.first().id if dostepne.exists() else None
+        
+        ksiazka.available_count = available_count
+        ksiazka.first_available_id = first_available_id
+        ksiazki_z_danymi.append(ksiazka)
+    
+    # PAGINACJA
+    per_page = request.GET.get('per_page', 12)
+    try:
+        per_page = int(per_page)
+    except:
+        per_page = 12
+    
+    paginator = Paginator(ksiazki_z_danymi, per_page)
+    page_number = request.GET.get('page')
+    try:
+        ksiazki_page = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        ksiazki_page = paginator.get_page(1)
+    except EmptyPage:
+        ksiazki_page = paginator.get_page(paginator.num_pages)
+    
     kontekst = {
-        'ksiazki': ksiazki,
+        'ksiazki': ksiazki_page,
         'gatunki': gatunki,
         'title': 'Katalog książek',
         'query': query,
         'selected_gatunek': gatunek_id,
         'selected_jezyk': jezyk,
+        'per_page': per_page,
+        'per_page_options': [6, 12, 24],
+        'paginator': paginator,
     }
     return render(request, 'katalog.html', kontekst)
 
@@ -56,8 +86,16 @@ def katalog(request):
 def ksiazka_detail(request, pk):
     """Szczegóły jednej książki"""
     ksiazka = get_object_or_404(Ksiazka, pk=pk)
+    
+    # Poprawne liczenie dostępnych egzemplarzy
+    dostepne = ksiazka.egzemplarze.filter(status='dostepny')
+    available_count = dostepne.count()
+    first_available_id = dostepne.first().id if dostepne.exists() else None
+    
     kontekst = {
         'ksiazka': ksiazka,
+        'available_count': available_count,
+        'first_available_id': first_available_id,
         'title': ksiazka.tytul,
     }
     return render(request, 'ksiazka_detail.html', kontekst)
@@ -90,8 +128,6 @@ class CustomLogoutView(LogoutView):
     next_page = 'home'
     http_method_names = ['get', 'post']
 
-
-# ====================== NOWE FUNKCJE KOSZYKA ======================
 
 @login_required
 def dodaj_do_koszyka(request, egzemplarz_id):
@@ -137,17 +173,14 @@ def zatwierdz_koszyk(request):
         egzemplarz.save()
     
     request.session['koszyk'] = []
-    messages.success(request, 'Wypożyczenie zostało zatwierdzone! Sprawdź Moje wypożyczenia.')
+    messages.success(request, 'Wypożyczenie zostało zatwierdzone!')
     return redirect('profile')
 
-
-# ====================== PROFIL ======================
 
 @login_required
 def profile(request):
     """Strona profilu użytkownika"""
     tab = request.GET.get('tab', 'rezerwacje')
-    
     rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')
     
     kontekst = {
@@ -163,7 +196,6 @@ def anuluj_rezerwacje(request, rezerwacja_id):
     """Anulowanie rezerwacji"""
     rezerwacja = get_object_or_404(Rezerwacja, id=rezerwacja_id, uzytkownik=request.user)
     egzemplarz = rezerwacja.egzemplarz
-    
     egzemplarz.status = 'dostepny'
     egzemplarz.save()
     rezerwacja.delete()
