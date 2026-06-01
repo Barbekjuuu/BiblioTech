@@ -47,17 +47,16 @@
             {% if user.is_authenticated %}
                 {% if available_count > 0 and first_available_id %}
                     {% comment %} Przycisk wypożyczenia: widoczny gdy są dostępne egzemplarze {% endcomment %}
-                    <a href="{% url 'dodaj_do_koszyka' first_available_id %}" 
-                       class="btn-wypozycz"
-                       onclick="return confirm('Czy chcesz dodać tę książkę do koszyka?')">
-                        Wypożycz
-                    </a>
+                    <form action="{% url 'dodaj_do_koszyka' first_available_id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-wypozycz" onclick="return confirm('Czy chcesz dodać tę książkę do koszyka?')">Wypożycz</button>
+                    </form>
                 {% else %}
                     {% comment %} Przycisk rezerwacji: widoczny gdy brak dostępnych egzemplarzy. {% endcomment %}
-                    <a href="{% url 'zarezerwuj_ksiazke' ksiazka.id %}" class="btn-rezerwuj"
-                       onclick="return confirm('Czy chcesz zgłosić oczekującą rezerwację dla tej książki?')">
-                        Zarezerwuj
-                    </a>
+                    <form action="{% url 'zarezerwuj_ksiazke' ksiazka.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-rezerwuj" onclick="return confirm('Czy chcesz zgłosić oczekującą rezerwację dla tej książki?')">Zarezerwuj</button>
+                    </form>
                 {% endif %}
             {% else %}
                 {% comment %} Komunikat dla niezalogowanych użytkowników {% endcomment %}

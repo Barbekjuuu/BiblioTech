@@ -77,7 +77,7 @@ class BiblioTechTests(TestCase):
         self.egzemplarz.save()
 
         self.client.login(username='testuser', password='testpass123')
-        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+        response = self.client.post(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
 
         oczekujaca = RezerwacjaOczekujaca.objects.get(uzytkownik=self.user, ksiazka=self.ksiazka)
@@ -92,7 +92,7 @@ class BiblioTechTests(TestCase):
         self.egzemplarz.save()
 
         self.client.login(username='testuser', password='testpass123')
-        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+        response = self.client.post(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
 
         oczekujaca = RezerwacjaOczekujaca.objects.get(uzytkownik=self.user, ksiazka=self.ksiazka)
@@ -170,7 +170,7 @@ class BiblioTechTests(TestCase):
         self.egzemplarz.save()
 
         self.client.login(username='testuser', password='testpass123')
-        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+        response = self.client.post(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
 
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
         oczekujaca = RezerwacjaOczekujaca.objects.filter(uzytkownik=self.user, ksiazka=self.ksiazka, aktywna=True)
@@ -194,7 +194,7 @@ class BiblioTechTests(TestCase):
     def test_waiting_reservation_not_created_when_book_available(self):
         """Test, że rezerwacja oczekująca nie jest tworzona, gdy książka jest dostępna."""
         self.client.login(username='testuser', password='testpass123')
-        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+        response = self.client.post(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
 
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
         self.assertFalse(RezerwacjaOczekujaca.objects.filter(uzytkownik=self.user, ksiazka=self.ksiazka).exists())

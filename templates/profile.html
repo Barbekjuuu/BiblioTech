@@ -120,7 +120,10 @@
                         <p>{{ powiadomienie.tresc }}</p>
                         <p><strong>Data:</strong> {{ powiadomienie.utworzone|date:"d.m.Y H:i" }}</p>
                         {% if powiadomienie.link %}
-                            <a href="{% url 'oznacz_powiadomienie_przeczytane' powiadomienie.id %}" class="btn-save">Przejdź do książki</a>
+                            <form action="{% url 'oznacz_powiadomienie_przeczytane' powiadomienie.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-save">Przejdź do książki</button>
+                            </form>
                         {% endif %}
                     </div>
                 {% endfor %}

@@ -185,6 +185,7 @@ def notify_next_waiting_user(ksiazka):
 
 
 @login_required
+@require_POST
 def dodaj_do_koszyka(request, egzemplarz_id):
     """Dodaje egzemplarz do koszyka (sesja)."""
     egzemplarz = get_object_or_404(Egzemplarz, id=egzemplarz_id, status='dostepny')
@@ -203,7 +204,9 @@ def dodaj_do_koszyka(request, egzemplarz_id):
     return redirect('ksiazka_detail', pk=egzemplarz.ksiazka.id)
 
 
+
 @login_required
+@require_POST
 def zarezerwuj_ksiazke(request, ksiazka_id):
     """Tworzy zgłoszenie oczekującej rezerwacji dla książki."""
     ksiazka = get_object_or_404(Ksiazka, id=ksiazka_id)
@@ -364,6 +367,7 @@ def zwroc_rezerwacje(request, rezerwacja_id):
 
 
 @login_required
+@require_POST
 def oznacz_powiadomienie_przeczytane(request, powiadomienie_id):
     """Oznacza powiadomienie jako przeczytane i przekierowuje użytkownika."""
     powiadomienie = get_object_or_404(Powiadomienie, id=powiadomienie_id, uzytkownik=request.user)
@@ -387,6 +391,7 @@ def oznacz_wszystkie_powiadomienia_przeczytane(request):
 # ====================== NOWA FUNKCJA ======================
 
 @login_required
+@require_POST
 def usun_z_koszyka(request, egzemplarz_id):
     """Usuwa egzemplarz z koszyka"""
     koszyk = request.session.get('koszyk', [])

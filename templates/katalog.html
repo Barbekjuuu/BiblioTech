@@ -72,17 +72,15 @@
 
                         {% if user.is_authenticated %}
                             {% if ksiazka.available_count > 0 %}
-                                <a href="{% url 'dodaj_do_koszyka' ksiazka.first_available_id %}"
-                                   class="btn-wypozycz"
-                                   onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz dodać tę książkę do koszyka?')">
-                                    Wypożycz
-                                </a>
+                                <form action="{% url 'dodaj_do_koszyka' ksiazka.first_available_id %}" method="post" class="inline-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-wypozycz" onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz dodać tę książkę do koszyka?')">Wypożycz</button>
+                                </form>
                             {% else %}
-                                <a href="{% url 'zarezerwuj_ksiazke' ksiazka.id %}"
-                                   class="btn-rezerwuj"
-                                   onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz zgłosić oczekującą rezerwację dla tej książki?')">
-                                    Zarezerwuj
-                                </a>
+                                <form action="{% url 'zarezerwuj_ksiazke' ksiazka.id %}" method="post" class="inline-form">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-rezerwuj" onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz zgłosić oczekującą rezerwację dla tej książki?')">Zarezerwuj</button>
+                                </form>
                             {% endif %}
                         {% endif %}
                     </div>
