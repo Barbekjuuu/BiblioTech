@@ -32,6 +32,10 @@
              class="sidebar-tab {% if active_tab == 'haslo' %}active{% endif %}">
             🔑 Zmiana Hasła
         </a>
+        <a href="{% url 'profile' %}?tab=powiadomienia" 
+             class="sidebar-tab {% if active_tab == 'powiadomienia' %}active{% endif %}">
+            🛎️ Powiadomienia
+        </a>
     </div>
 
     <!-- Prawa zawartość -->
@@ -80,6 +84,29 @@
                         {% endfor %}
                     </div>
                 {% endif %}
+            {% endif %}
+
+        {% elif active_tab == 'powiadomienia' %}
+            <h1>Powiadomienia</h1>
+            {% if unread_notifications_count %}
+                <form method="post" action="{% url 'oznacz_wszystkie_powiadomienia_przeczytane' %}" class="profile-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-save">Oznacz wszystkie jako przeczytane</button>
+                </form>
+            {% endif %}
+            {% if powiadomienia %}
+                {% for powiadomienie in powiadomienia %}
+                    <div class="rezerwacja-card {% if not powiadomienie.przeczytane %}unread-card{% endif %}">
+                        <h3>{{ powiadomienie.tytul }}</h3>
+                        <p>{{ powiadomienie.tresc }}</p>
+                        <p><strong>Data:</strong> {{ powiadomienie.utworzone|date:"d.m.Y H:i" }}</p>
+                        {% if powiadomienie.link %}
+                            <a href="{% url 'oznacz_powiadomienie_przeczytane' powiadomienie.id %}" class="btn-save">Przejdź do książki</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Brak powiadomień.</p>
             {% endif %}
 
         {% elif active_tab == 'dane' %}

@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca
+from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca, Powiadomienie
 from django.urls import reverse
 from django.utils import timezone
 
@@ -114,3 +114,22 @@ class BiblioTechTests(TestCase):
 
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
         self.assertFalse(RezerwacjaOczekujaca.objects.filter(uzytkownik=self.user, ksiazka=self.ksiazka).exists())
+
+    def test_mark_all_notifications_read(self):
+        """Test zbiorczego oznaczania powiadomień jako przeczytanych."""
+        Powiadomienie.objects.create(
+            uzytkownik=self.user,
+            tytul='Dostępna książka',
+            tresc='Książka jest teraz dostępna.',
+        )
+        Powiadomienie.objects.create(
+            uzytkownik=self.user,
+            tytul='Przypomnienie',
+            tresc='Masz nowe powiadomienie.',
+        )
+
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.post(reverse('oznacz_wszystkie_powiadomienia_przeczytane'))
+
+        self.assertRedirects(response, reverse('profile') + '?tab=powiadomienia')
+        self.assertEqual(self.user.powiadomienia.filter(przeczytane=False).count(), 0)

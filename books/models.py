@@ -146,6 +146,7 @@ class RezerwacjaOczekujaca(models.Model):
     ksiazka = models.ForeignKey(Ksiazka, on_delete=models.CASCADE, related_name='oczekujace_rezerwacje')
     data_zgloszenia = models.DateTimeField(auto_now_add=True)
     aktywna = models.BooleanField(default=True)
+    powiadomiony = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Oczekująca rezerwacja: {self.ksiazka.tytul} dla {self.uzytkownik.username}"
@@ -153,3 +154,20 @@ class RezerwacjaOczekujaca(models.Model):
     class Meta:
         verbose_name = "Zgłoszenie rezerwacji"
         verbose_name_plural = "Zgłoszenia rezerwacji"
+
+
+class Powiadomienie(models.Model):
+    """Powiadomienie wysyłane użytkownikowi, gdy jego oczekiwana książka jest dostępna."""
+    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE, related_name='powiadomienia')
+    tytul = models.CharField(max_length=220)
+    tresc = models.TextField()
+    link = models.CharField(max_length=255, blank=True)
+    utworzone = models.DateTimeField(auto_now_add=True)
+    przeczytane = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Powiadomienie dla {self.uzytkownik.username}: {self.tytul}"
+
+    class Meta:
+        verbose_name = "Powiadomienie"
+        verbose_name_plural = "Powiadomienia"

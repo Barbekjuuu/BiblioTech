@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca
+from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca, Powiadomienie
 
 class EgzemplarzInline(admin.TabularInline):
     model = Egzemplarz
@@ -55,6 +55,13 @@ class RezerwacjaAdmin(admin.ModelAdmin):
 
 @admin.register(RezerwacjaOczekujaca)
 class RezerwacjaOczekujacaAdmin(admin.ModelAdmin):
-    list_display = ('uzytkownik', 'ksiazka', 'aktywna', 'data_zgloszenia')
-    list_filter = ('aktywna', 'data_zgloszenia')
+    list_display = ('uzytkownik', 'ksiazka', 'aktywna', 'powiadomiony', 'data_zgloszenia')
+    list_filter = ('aktywna', 'powiadomiony', 'data_zgloszenia')
     search_fields = ('uzytkownik__username', 'ksiazka__tytul')
+
+
+@admin.register(Powiadomienie)
+class PowiadomienieAdmin(admin.ModelAdmin):
+    list_display = ('uzytkownik', 'tytul', 'przeczytane', 'utworzone')
+    list_filter = ('przeczytane', 'utworzone')
+    search_fields = ('uzytkownik__username', 'tytul')

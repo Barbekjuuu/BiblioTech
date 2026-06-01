@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca
+from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca, Powiadomienie
 from .forms import UserProfileForm, CustomPasswordChangeForm
 
 # -----------------------------------------------------------------------------
@@ -156,6 +156,30 @@ class CustomLogoutView(LogoutView):
     http_method_names = ['get', 'post']
 
 
+def notify_next_waiting_user(ksiazka):
+    """Tworzy powiadomienie dla pierwszej oczekującej rezerwacji na daną książkę."""
+    zgloszenie = RezerwacjaOczekujaca.objects.filter(
+        ksiazka=ksiazka,
+        aktywna=True,
+        powiadomiony=False
+    ).order_by('data_zgloszenia').first()
+
+    if not zgloszenie:
+        return
+
+    Powiadomienie.objects.create(
+        uzytkownik=zgloszenie.uzytkownik,
+        tytul=f'Książka "{ksiazka.tytul}" jest dostępna',
+        tresc=(
+            f'Książka "{ksiazka.tytul}" jest teraz dostępna. '
+            'Przejdź do jej strony, aby wypożyczyć lub dodać do koszyka.'
+        ),
+        link=reverse('ksiazka_detail', args=[ksiazka.id])
+    )
+    zgloszenie.powiadomiony = True
+    zgloszenie.save()
+
+
 @login_required
 def dodaj_do_koszyka(request, egzemplarz_id):
     """Dodaje egzemplarz do koszyka (sesja)."""
@@ -238,6 +262,7 @@ def profile(request):
     tab = request.GET.get('tab', 'rezerwacje')
     rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')
     rezerwacje_oczekujace = request.user.oczekujace_rezerwacje.filter(aktywna=True).order_by('-data_zgloszenia')
+    powiadomienia = request.user.powiadomienia.order_by('-utworzone')
 
     profile_form = UserProfileForm(instance=request.user)
     password_form = CustomPasswordChangeForm(user=request.user)
@@ -265,6 +290,7 @@ def profile(request):
     kontekst = {
         'rezerwacje': rezerwacje,
         'rezerwacje_oczekujace': rezerwacje_oczekujace,
+        'powiadomienia': powiadomienia,
         'title': 'Mój Profil',
         'active_tab': tab,
         'profile_form': profile_form,
@@ -280,10 +306,32 @@ def anuluj_rezerwacje(request, rezerwacja_id):
     egzemplarz = rezerwacja.egzemplarz
     egzemplarz.status = 'dostepny'
     egzemplarz.save()
+    notify_next_waiting_user(egzemplarz.ksiazka)
     rezerwacja.delete()
     
     messages.success(request, 'Rezerwacja została pomyślnie anulowana.')
     return redirect('profile')
+
+
+@login_required
+def oznacz_powiadomienie_przeczytane(request, powiadomienie_id):
+    """Oznacza powiadomienie jako przeczytane i przekierowuje użytkownika."""
+    powiadomienie = get_object_or_404(Powiadomienie, id=powiadomienie_id, uzytkownik=request.user)
+    powiadomienie.przeczytane = True
+    powiadomienie.save()
+
+    if powiadomienie.link:
+        return redirect(powiadomienie.link)
+    return redirect('profile')
+
+
+@login_required
+def oznacz_wszystkie_powiadomienia_przeczytane(request):
+    """Oznacza wszystkie powiadomienia użytkownika jako przeczytane."""
+    if request.method == 'POST':
+        request.user.powiadomienia.filter(przeczytane=False).update(przeczytane=True)
+        messages.success(request, 'Wszystkie powiadomienia zostały oznaczone jako przeczytane.')
+    return redirect(f"{reverse('profile')}?tab=powiadomienia")
 
 
 # ====================== NOWA FUNKCJA ======================

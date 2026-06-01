@@ -26,6 +26,12 @@
                 
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' %}">Mój Profil</a>
+                    <a href="{% url 'profile' %}?tab=powiadomienia">
+                        🛎️ Powiadomienia
+                        {% if unread_notifications_count %}
+                            <span class="notification-badge">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
                     <span>Witaj, {{ user.username }}!</span>
                     <a href="{% url 'logout' %}">Wyloguj się</a>
                 {% else %}
