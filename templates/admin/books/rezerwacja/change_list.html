@@ -1,0 +1,12 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+    {{ block.super }}
+    <div class="object-tools">
+        <ul class="object-tools">
+            <li>
+                <a href="{% url 'admin:books_rezerwacja_create_for_user' %}" class="addlink">Rezerwuj dla klienta</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

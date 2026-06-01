@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <div class="module">
+    <h1>Utwórz rezerwację dla klienta</h1>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+      </table>
+      <p>
+        <input type="submit" value="Utwórz rezerwację" class="default">
+        <a href="{{ opts.app_label }}/{{ opts.model_name }}/">Anuluj</a>
+      </p>
+    </form>
+  </div>
+{% endblock %}
