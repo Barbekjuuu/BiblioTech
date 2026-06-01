@@ -57,6 +57,20 @@ class BiblioTechTests(TestCase):
         self.egzemplarz.refresh_from_db()
         self.assertEqual(self.egzemplarz.status, 'zarezerwowany')
 
+    def test_confirm_cart_fails_if_book_unavailable(self):
+        """Testuje, że zatwierdzenie koszyka kończy się błędem, gdy książka przestanie być dostępna."""
+        self.client.login(username='testuser', password='testpass123')
+
+        response = self.client.post(reverse('dodaj_do_koszyka', args=[self.egzemplarz.id]))
+        self.assertEqual(response.status_code, 302)
+
+        self.egzemplarz.status = 'zarezerwowany'
+        self.egzemplarz.save()
+
+        response = self.client.post(reverse('zatwierdz_koszyk'))
+        self.assertRedirects(response, reverse('koszyk'))
+        self.assertEqual(Rezerwacja.objects.count(), 0)
+
     def test_profile_update(self):
         """Test aktualizacji danych osobowych użytkownika."""
         self.client.login(username='testuser', password='testpass123')

@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db import transaction
 from django.db.models import Q
+from django.http import Http404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
@@ -239,18 +241,27 @@ def koszyk(request):
 def zatwierdz_koszyk(request):
     """Zatwierdza koszyk i przenosi do Moich wypożyczeń."""
     koszyk_ids = request.session.get('koszyk', [])
-    
-    # Przy zatwierdzaniu koszyka tworzymy rezerwacje dla wszystkich dodanych egzemplarzy.
-    # Po zamknięciu transakcji egzemplarze zmieniają status na 'zarezerwowany'.
-    for egz_id in koszyk_ids:
-        egzemplarz = get_object_or_404(Egzemplarz, id=egz_id, status='dostepny')
-        Rezerwacja.objects.create(
-            uzytkownik=request.user,
-            egzemplarz=egzemplarz
-        )
-        egzemplarz.status = 'zarezerwowany'
-        egzemplarz.save()
-    
+
+    try:
+        with transaction.atomic():
+            # Przy zatwierdzaniu koszyka tworzymy rezerwacje dla wszystkich dodanych egzemplarzy.
+            # Transakcja gwarantuje, że żaden egzemplarz nie zostanie zarezerwowany dwukrotnie.
+            for egz_id in koszyk_ids:
+                egzemplarz = get_object_or_404(
+                    Egzemplarz.objects.select_for_update(),
+                    id=egz_id,
+                    status='dostepny'
+                )
+                Rezerwacja.objects.create(
+                    uzytkownik=request.user,
+                    egzemplarz=egzemplarz
+                )
+                egzemplarz.status = 'zarezerwowany'
+                egzemplarz.save()
+    except Http404:
+        messages.error(request, 'One or more books in your cart are no longer available. Please refresh the cart.')
+        return redirect('koszyk')
+
     request.session['koszyk'] = []
     messages.success(request, 'Wypożyczenie zostało zatwierdzone!')
     return redirect('profile')
