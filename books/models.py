@@ -3,9 +3,20 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 
+# Modele w tej aplikacji odzwierciedlają podstawową strukturę systemu bibliotecznego:
+# - Autor: informacje o autorze
+# - Gatunek: kategoryzacja książki
+# - Ksiazka: dane książki i relacje do autora/gatunku
+# - Egzemplarz: pojedynczy egzemplarz książki w bibliotece
+# - Rezerwacja: aktywny zapis użytkownika na konkretny egzemplarz
+
 
 class Autor(models.Model):
-    """Model autora książki"""
+    """Model autora książki.
+
+    Autor zawiera imię i nazwisko oraz opcjonalne zdjęcie.
+    Ten model jest powiązany z modelem `Ksiazka` relacją wiele-do-jednego.
+    """
     imie_nazwisko = models.CharField(max_length=200)
     zdjecie = models.ImageField(upload_to='autorzy/', blank=True, null=True)
 
@@ -18,7 +29,10 @@ class Autor(models.Model):
 
 
 class Gatunek(models.Model):
-    """Gatunek literacki"""
+    """Gatunek literacki.
+
+    Gatunek jest prostym słownikiem, który umożliwia filtrowanie książek.
+    """
     nazwa = models.CharField(max_length=100)
 
     def __str__(self):
@@ -30,7 +44,11 @@ class Gatunek(models.Model):
 
 
 class Ksiazka(models.Model):
-    """Główny model książki"""
+    """Główny model książki.
+
+    Model przechowuje dane książki, w tym: tytuł, opis, datę wydania,
+    okładkę, język oraz relacje do autora i gatunku.
+    """
     JEZYK_CHOICES = [
         ('pl', 'Polski'),
         ('en', 'Angielski'),
@@ -51,7 +69,12 @@ class Ksiazka(models.Model):
     autor = models.ForeignKey(Autor, on_delete=models.CASCADE, related_name='ksiazki')
     gatunek = models.ForeignKey(Gatunek, on_delete=models.SET_NULL, null=True, related_name='ksiazki')
     def okladka_url(self):
-        """Zwraca URL okładki lub domyślny obrazek"""
+        """Zwraca URL okładki lub domyślny obrazek.
+
+        W widokach i szablonach używamy tej metody, aby zawsze mieć bezpieczny
+        adres URL do wyświetlenia. Jeśli okładka nie jest załadowana, zwracany jest
+        stały zasób statyczny.
+        """
         if self.okladka:
             return self.okladka.url
         return '/static/images/cover.png'  # domyślna okładka
@@ -64,7 +87,11 @@ class Ksiazka(models.Model):
 
 
 class Egzemplarz(models.Model):
-    """Konkretny egzemplarz książki w bibliotece"""
+    """Konkretny egzemplarz książki w bibliotece.
+
+    Ten model reprezentuje pojedynczy dostępny lub wypożyczony egzemplarz.
+    Umożliwia zarządzanie stanem egzemplarza w procesie rezerwacji.
+    """
     STATUS_CHOICES = [
         ('dostepny', 'Dostępny'),
         ('wypozyczony', 'Wypożyczony'),
@@ -83,7 +110,11 @@ class Egzemplarz(models.Model):
 
 
 class Rezerwacja(models.Model):
-    """Rezerwacja książki przez użytkownika"""
+    """Rezerwacja książki przez użytkownika.
+
+    Rezerwacja łączy użytkownika z egzemplarzem na okres 2 tygodni.
+    W momencie zapisu ustawiane są daty rezerwacji i ważności.
+    """
     uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rezerwacje')
     egzemplarz = models.ForeignKey(Egzemplarz, on_delete=models.CASCADE, related_name='rezerwacje')
     

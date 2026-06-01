@@ -6,6 +6,9 @@ class EgzemplarzInline(admin.TabularInline):
     model = Egzemplarz
     extra = 1
 
+    # Egzemplarze wyświetlane inline w edycji książki.
+    # Dzięki temu administrator może dodać lub zmienić egzemplarze bez opuszczania formularza książki.
+
 @admin.register(Autor)
 class AutorAdmin(admin.ModelAdmin):
     list_display = ('imie_nazwisko', 'zdjecie_preview')
@@ -29,6 +32,9 @@ class KsiazkaAdmin(admin.ModelAdmin):
     search_fields = ('tytul', 'opis', 'autor__imie_nazwisko')
     inlines = [EgzemplarzInline]
 
+    # Administracyjny panel książki pokazuje listę pól w tabeli,
+    # umożliwia szybkie filtrowanie i wyszukiwanie oraz podgląd okładki.
+
     def okladka_preview(self, obj):
         if obj.okladka:
             return format_html('<img src="{}" width="60" height="80" style="object-fit:cover;" />', obj.okladka.url)
@@ -44,3 +50,5 @@ class EgzemplarzAdmin(admin.ModelAdmin):
 class RezerwacjaAdmin(admin.ModelAdmin):
     list_display = ('uzytkownik', 'egzemplarz', 'data_rezerwacji', 'data_waznosci')
     list_filter = ('data_rezerwacji',)
+
+    # Rezerwacje można szybko przeglądać w adminie, co ułatwia obsługę biblioteki.

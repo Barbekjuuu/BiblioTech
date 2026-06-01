@@ -5,6 +5,9 @@ import random
 import requests
 from django.core.files.base import ContentFile
 
+# Ten skrypt służy do szybkiego wypełniania bazy danych przykładowymi rekordami.
+# Użyte biblioteki: Faker do losowych danych oraz requests do pobrania okładek.
+
 fake = Faker('pl_PL')
 
 class Command(BaseCommand):
@@ -12,6 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.stdout.write('Rozpoczynam generowanie danych...')
+        self.stdout.write('Użyj tego polecenia, aby szybko wypełnić bazę danymi testowymi, np. przed prezentacją projektu.')
 
         # Gatunki
         gatunki_nazwy = ['Powieść', 'Fantastyka', 'Kryminał', 'Romans', 'Biografia', 'Historia', 'Science Fiction', 'Literatura młodzieżowa']
