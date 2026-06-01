@@ -253,10 +253,16 @@ def zatwierdz_koszyk(request):
                     id=egz_id,
                     status='dostepny'
                 )
-                Rezerwacja.objects.create(
+                rezerwacja = Rezerwacja.objects.create(
                     uzytkownik=request.user,
                     egzemplarz=egzemplarz
                 )
+                # Dezaktywujemy powiązane zgłoszenie oczekujące, jeśli użytkownik wcześniej czekał na tę książkę.
+                RezerwacjaOczekujaca.objects.filter(
+                    uzytkownik=request.user,
+                    ksiazka=egzemplarz.ksiazka,
+                    aktywna=True
+                ).update(aktywna=False)
                 egzemplarz.status = 'zarezerwowany'
                 egzemplarz.save()
     except Http404:
@@ -325,6 +331,16 @@ def anuluj_rezerwacje(request, rezerwacja_id):
     
     messages.success(request, 'Rezerwacja została pomyślnie anulowana.')
     return redirect('profile')
+
+
+@login_required
+def anuluj_rezerwacje_oczekujaca(request, oczekujaca_id):
+    """Anuluje oczekującą rezerwację użytkownika."""
+    oczekujaca = get_object_or_404(RezerwacjaOczekujaca, id=oczekujaca_id, uzytkownik=request.user, aktywna=True)
+    oczekujaca.aktywna = False
+    oczekujaca.save()
+    messages.success(request, 'Twoje oczekujące zgłoszenie zostało anulowane.')
+    return redirect(f"{reverse('profile')}?tab=rezerwacje")
 
 
 @login_required

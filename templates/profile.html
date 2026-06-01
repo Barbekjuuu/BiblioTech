@@ -86,6 +86,11 @@
                             <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
                             <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
                             <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
+                            <div class="reservation-actions">
+                                <a href="{% url 'anuluj_rezerwacje_oczekujaca' ocz.id %}"
+                                   onclick="return confirm('Czy na pewno chcesz anulować oczekujące zgłoszenie?')"
+                                   class="cancel-btn">Anuluj zgłoszenie</a>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

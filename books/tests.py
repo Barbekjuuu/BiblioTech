@@ -71,6 +71,43 @@ class BiblioTechTests(TestCase):
         self.assertRedirects(response, reverse('koszyk'))
         self.assertEqual(Rezerwacja.objects.count(), 0)
 
+    def test_cancel_waiting_reservation(self):
+        """Testuje anulowanie oczekującej rezerwacji."""
+        self.egzemplarz.status = 'zarezerwowany'
+        self.egzemplarz.save()
+
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+        self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
+
+        oczekujaca = RezerwacjaOczekujaca.objects.get(uzytkownik=self.user, ksiazka=self.ksiazka)
+        response = self.client.get(reverse('anuluj_rezerwacje_oczekujaca', args=[oczekujaca.id]))
+        self.assertRedirects(response, reverse('profile') + '?tab=rezerwacje')
+        oczekujaca.refresh_from_db()
+        self.assertFalse(oczekujaca.aktywna)
+
+    def test_waiting_request_deactivates_when_checkout(self):
+        """Testuje dezaktywację oczekującego zgłoszenia po zatwierdzeniu rezerwacji."""
+        self.egzemplarz.status = 'zarezerwowany'
+        self.egzemplarz.save()
+
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+        self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
+
+        oczekujaca = RezerwacjaOczekujaca.objects.get(uzytkownik=self.user, ksiazka=self.ksiazka)
+        self.assertTrue(oczekujaca.aktywna)
+
+        self.egzemplarz.status = 'dostepny'
+        self.egzemplarz.save()
+        response = self.client.post(reverse('dodaj_do_koszyka', args=[self.egzemplarz.id]))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.post(reverse('zatwierdz_koszyk'))
+        self.assertEqual(response.status_code, 302)
+
+        oczekujaca.refresh_from_db()
+        self.assertFalse(oczekujaca.aktywna)
+
     def test_return_reservation_makes_copy_available(self):
         """Testuje zwrot rezerwacji i przywrócenie egzemplarza do dostępnych."""
         self.client.login(username='testuser', password='testpass123')
