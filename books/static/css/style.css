@@ -768,6 +768,15 @@ nav a:hover { color: #fcd34d; }
     color: #d7d3c1;
 }
 
+.pending-section {
+    margin-top: 1.4rem;
+}
+
+.pending-note {
+    color: #f8d86f;
+    font-weight: 600;
+}
+
 .cancel-btn,
 .btn-edit {
     display: inline-block;

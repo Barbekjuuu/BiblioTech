@@ -78,8 +78,9 @@
                                     Wypożycz
                                 </a>
                             {% else %}
-                                <a href="#" class="btn-rezerwuj"
-                                   onclick="event.stopImmediatePropagation(); alert('Funkcja rezerwacji w przygotowaniu')">
+                                <a href="{% url 'zarezerwuj_ksiazke' ksiazka.id %}"
+                                   class="btn-rezerwuj"
+                                   onclick="event.stopImmediatePropagation(); return confirm('Czy chcesz zgłosić oczekującą rezerwację dla tej książki?')">
                                     Zarezerwuj
                                 </a>
                             {% endif %}

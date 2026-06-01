@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja
+from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca
 from django.urls import reverse
 from django.utils import timezone
 
@@ -94,3 +94,23 @@ class BiblioTechTests(TestCase):
         self.assertRedirects(response, reverse('profile') + '?tab=haslo')
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password('newpass456'))
+
+    def test_waiting_reservation_request(self):
+        """Test zgłoszenia oczekującej rezerwacji dla niedostępnej książki."""
+        self.egzemplarz.status = 'zarezerwowany'
+        self.egzemplarz.save()
+
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+
+        self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
+        oczekujaca = RezerwacjaOczekujaca.objects.filter(uzytkownik=self.user, ksiazka=self.ksiazka, aktywna=True)
+        self.assertEqual(oczekujaca.count(), 1)
+
+    def test_waiting_reservation_not_created_when_book_available(self):
+        """Test, że rezerwacja oczekująca nie jest tworzona, gdy książka jest dostępna."""
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.get(reverse('zarezerwuj_ksiazke', args=[self.ksiazka.id]))
+
+        self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
+        self.assertFalse(RezerwacjaOczekujaca.objects.filter(uzytkownik=self.user, ksiazka=self.ksiazka).exists())

@@ -53,9 +53,9 @@
                         Wypożycz
                     </a>
                 {% else %}
-                    {% comment %} Przycisk rezerwacji: widoczny gdy brak dostępnych egzemplarzy. Tutaj tylko komunikat, bo rezerwacja jest w przygotowaniu. {% endcomment %}
-                    <a href="#" class="btn-rezerwuj"
-                       onclick="return confirm('Czy chcesz zarezerwować tę książkę?')">
+                    {% comment %} Przycisk rezerwacji: widoczny gdy brak dostępnych egzemplarzy. {% endcomment %}
+                    <a href="{% url 'zarezerwuj_ksiazke' ksiazka.id %}" class="btn-rezerwuj"
+                       onclick="return confirm('Czy chcesz zgłosić oczekującą rezerwację dla tej książki?')">
                         Zarezerwuj
                     </a>
                 {% endif %}

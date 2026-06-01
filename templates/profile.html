@@ -51,8 +51,35 @@
                            class="cancel-btn">Anuluj rezerwację</a>
                     </div>
                 {% endfor %}
+
+                {% if rezerwacje_oczekujace %}
+                    <div class="pending-section">
+                        <h2>Oczekujące zgłoszenia</h2>
+                        {% for ocz in rezerwacje_oczekujace %}
+                            <div class="rezerwacja-card">
+                                <h3>{{ ocz.ksiazka.tytul }}</h3>
+                                <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
+                                <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
+                                <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             {% else %}
                 <p>Nie masz jeszcze żadnych rezerwacji.</p>
+                {% if rezerwacje_oczekujace %}
+                    <div class="pending-section">
+                        <h2>Oczekujące zgłoszenia</h2>
+                        {% for ocz in rezerwacje_oczekujace %}
+                            <div class="rezerwacja-card">
+                                <h3>{{ ocz.ksiazka.tytul }}</h3>
+                                <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
+                                <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
+                                <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             {% endif %}
 
         {% elif active_tab == 'dane' %}

@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja
+from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca
 from .forms import UserProfileForm, CustomPasswordChangeForm
 
 # -----------------------------------------------------------------------------
@@ -176,6 +176,29 @@ def dodaj_do_koszyka(request, egzemplarz_id):
 
 
 @login_required
+def zarezerwuj_ksiazke(request, ksiazka_id):
+    """Tworzy zgłoszenie oczekującej rezerwacji dla książki."""
+    ksiazka = get_object_or_404(Ksiazka, id=ksiazka_id)
+    dostepne = ksiazka.egzemplarze.filter(status='dostepny').exists()
+
+    if dostepne:
+        messages.info(request, 'Ta książka jest dostępna. Dodaj ją do koszyka, aby wypożyczyć.')
+        return redirect('ksiazka_detail', pk=ksiazka.id)
+
+    istnieje = RezerwacjaOczekujaca.objects.filter(uzytkownik=request.user, ksiazka=ksiazka, aktywna=True).exists()
+    if istnieje:
+        messages.info(request, 'Masz już oczekującą rezerwację dla tej książki.')
+        return redirect('ksiazka_detail', pk=ksiazka.id)
+
+    RezerwacjaOczekujaca.objects.create(
+        uzytkownik=request.user,
+        ksiazka=ksiazka
+    )
+    messages.success(request, 'Zgłoszono oczekującą rezerwację. Otrzymasz powiadomienie, gdy egzemplarz będzie dostępny.')
+    return redirect('ksiazka_detail', pk=ksiazka.id)
+
+
+@login_required
 def koszyk(request):
     """Osobna strona koszyka"""
     koszyk_ids = request.session.get('koszyk', [])
@@ -214,6 +237,7 @@ def profile(request):
     """Strona profilu użytkownika."""
     tab = request.GET.get('tab', 'rezerwacje')
     rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')
+    rezerwacje_oczekujace = request.user.oczekujace_rezerwacje.filter(aktywna=True).order_by('-data_zgloszenia')
 
     profile_form = UserProfileForm(instance=request.user)
     password_form = CustomPasswordChangeForm(user=request.user)
@@ -240,6 +264,7 @@ def profile(request):
 
     kontekst = {
         'rezerwacje': rezerwacje,
+        'rezerwacje_oczekujace': rezerwacje_oczekujace,
         'title': 'Mój Profil',
         'active_tab': tab,
         'profile_form': profile_form,

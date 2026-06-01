@@ -138,3 +138,18 @@ class Rezerwacja(models.Model):
     class Meta:
         verbose_name = "Rezerwacja"
         verbose_name_plural = "Rezerwacje"
+
+
+class RezerwacjaOczekujaca(models.Model):
+    """Zgłoszenie rezerwacji na książkę, gdy brak dostępnych egzemplarzy."""
+    uzytkownik = models.ForeignKey(User, on_delete=models.CASCADE, related_name='oczekujace_rezerwacje')
+    ksiazka = models.ForeignKey(Ksiazka, on_delete=models.CASCADE, related_name='oczekujace_rezerwacje')
+    data_zgloszenia = models.DateTimeField(auto_now_add=True)
+    aktywna = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Oczekująca rezerwacja: {self.ksiazka.tytul} dla {self.uzytkownik.username}"
+
+    class Meta:
+        verbose_name = "Zgłoszenie rezerwacji"
+        verbose_name_plural = "Zgłoszenia rezerwacji"

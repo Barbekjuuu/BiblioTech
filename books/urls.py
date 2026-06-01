@@ -19,5 +19,6 @@ urlpatterns = [
     
     # Profil i zarządzanie
     path('profil/', views.profile, name='profile'),
+    path('ksiazka/rezerwuj/<int:ksiazka_id>/', views.zarezerwuj_ksiazke, name='zarezerwuj_ksiazke'),
     path('rezerwacja/anuluj/<int:rezerwacja_id>/', views.anuluj_rezerwacje, name='anuluj_rezerwacje'),
 ]

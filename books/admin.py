@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja
+from .models import Autor, Gatunek, Ksiazka, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca
 
 class EgzemplarzInline(admin.TabularInline):
     model = Egzemplarz
@@ -52,3 +52,9 @@ class RezerwacjaAdmin(admin.ModelAdmin):
     list_filter = ('data_rezerwacji',)
 
     # Rezerwacje można szybko przeglądać w adminie, co ułatwia obsługę biblioteki.
+
+@admin.register(RezerwacjaOczekujaca)
+class RezerwacjaOczekujacaAdmin(admin.ModelAdmin):
+    list_display = ('uzytkownik', 'ksiazka', 'aktywna', 'data_zgloszenia')
+    list_filter = ('aktywna', 'data_zgloszenia')
+    search_fields = ('uzytkownik__username', 'ksiazka__tytul')
