@@ -1,72 +1,75 @@
-# BiblioTech - Project Overview
+# BiblioTech — Project Overview (dokumentacja do pracy dyplomowej)
 
-## Purpose
+## Cel projektu
 
-BiblioTech is a Django-based library system that allows users to browse books, filter by genre and language, add available copies to a reservation cart, and confirm reservations. The application is designed to be visually consistent with a dark/gold theme and provides a friendly user interface aligned with the home page styling.
+BiblioTech to aplikacja biblioteczna napisana w Django, umożliwiająca przeglądanie katalogu, zarządzanie rezerwacjami i obsługę wypożyczeń. Projekt pokazuje projektowanie modelu domenowego, pracę z transakcjami bazodanowymi oraz rozszerzenie panelu administracyjnego.
 
-## Key Features
+## Szybki przegląd funkcji
 
-- User registration, login, and profile management
-- Catalog of books with search, filters, and pagination
-- Book details page with availability status and borrowing actions
-- Session-based cart for collecting selected book copies
-- Reservation checkout that changes book copy status
-- Admin panel with enhanced search, filters, and inline copy editing
-- Seed command for generating test data using Faker
-- Unit tests for models and reservation workflow
+- Rejestracja i logowanie użytkowników; profil z zakładkami `Wypożyczenia`, `Oczekujące`, `Powiadomienia`.
+- Katalog z wyszukiwaniem, filtrem po gatunku i języku, paginacją i kartami książek.
+- Strona szczegółów książki z informacją o dostępnych egzemplarzach.
+- Sesyjny koszyk (wybór konkretnych egzemplarzy) oraz transakcyjne zatwierdzanie rezerwacji (zmiana statusu egzemplarza).
+- System rezerwacji oczekujących z powiadomieniami (pole `powiadomiony` oraz model `Powiadomienie`).
+- Panel admina z dodatkowymi akcjami: tworzenie rezerwacji dla klienta, walidacja dostępności egzemplarza, podgląd okładek.
+- Komendy zarządzające (`seed_db`) do generowania danych testowych.
+- Testy jednostkowe i integracyjne obejmujące krytyczne scenariusze rezerwacji i administrącji.
 
-## Core Models
+## Modele kluczowe
 
-- `Autor` - author name and optional photo
-- `Gatunek` - book genre
-- `Ksiazka` - main book entity with title, description, cover, language, author, and genre
-- `Egzemplarz` - physical copy of a book with availability status
-- `Rezerwacja` - reservation connecting user and copy with expiration date
+- `Autor`, `Gatunek`, `Ksiazka` — opis treści katalogu.
+- `Egzemplarz` — egzemplarz fizyczny z polem statusu (dostępny/wypożyczony).
+- `Rezerwacja` — powiązanie użytkownika z egzemplarzem, data utworzenia i (opcjonalnie) data zwrotu.
+- `RezerwacjaOczekujaca` — wpis w kolejce oczekujących, z polem `powiadomiony`.
+- `Powiadomienie` — obiekty powiadomień wysyłane do użytkowników.
 
-## Major Views
+## Zabezpieczenia i dobre praktyki
 
-- `home` - home page with featured latest books and search bar
-- `katalog` - catalog page with filters, pagination, and card-style navigation
-- `ksiazka_detail` - detailed book view with cover, description, and availability
-- `koszyk` - cart view with item list, remove button, and confirm reservation flow
-- `profile` - user profile page with tabbed navigation for reservations and personal data
+- Wszystkie operacje zmieniające stan (anuluj, zwrot, dodaj do koszyka, rezerwuj) używają metod POST i dekoratora `@require_POST`.
+- Transakcje i blokady `select_for_update` przy zatwierdzaniu koszyka, aby uniknąć wyścigów i podwójnego przydziału egzemplarza.
+- Migracje Django są up-to-date; testy uruchamiane na czystej bazie testowej przechodzą pomyślnie.
 
-## Admin Support
+## Instrukcja uruchomienia (Windows)
 
-- Custom admin for `Ksiazka` with `list_filter`, `search_fields`, and `EgzemplarzInline`
-- Visual preview of covers and author photos in admin list
-- Admin registration for all library models
+1. Utwórz i aktywuj virtualenv (jeśli nie ma):
 
-## Technical Notes
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+```
 
-- Uses Django sessions to track the cart before reservation confirmation
-- Reservation expiration is automatically calculated as 14 days from creation
-- `header-bg.png` is reused across pages for a consistent theme
-- Templates include inline documentation comments for project defense
+2. Zainstaluj zależności (jeśli potrzebne):
 
-## How to Run
+```powershell
+pip install -r requirements.txt
+```
 
-```bash
+3. Uruchom serwer developerski:
+
+```powershell
 cd BiblioTech
 venv\Scripts\python.exe manage.py runserver
 ```
 
-To run tests:
+4. Uruchom testy:
 
-```bash
+```powershell
 venv\Scripts\python.exe manage.py test books
 ```
 
-To seed data with Faker:
+## Mapowanie wymagań do pracy dyplomowej
 
-```bash
-venv\Scripts\python.exe manage.py seed_db
-```
+- Cel funkcjonalny: separacja rezerwacji oczekujących od aktywnych wypożyczeń (`profile` z zakładkami) — dowód: [templates/profile.html](templates/profile.html#L1).
+- Integralność danych: użycie transakcji i `select_for_update` przy zatwierdzaniu koszyka — dowód: `books/views.py` (`zatwierdz_koszyk`).
+- Bezpieczeństwo: wszystkie mutujące endpointy oznaczone `@require_POST` oraz CSRF w formularzach — dowód: zmiany w `templates/katalog.html`, `templates/ksiazka_detail.html`, `templates/profile.html`.
+- Obsługa administracyjna: możliwość rezerwacji egzemplarza dla klienta i tworzenia użytkownika z panelu admin — dowód: `books/admin.py` i `templates/admin/*`.
+- Testy: pokrycie scenariuszy rezerwacji, oczekiwania i akcji administracyjnych — dowód: `books/tests.py` (16 testów, wszystkie przechodzą).
 
-## Defense Points
+## Kolejne kroki (przygotowanie do obrony)
 
-- Clear model relationships: one-to-many between books and copies, one-to-many between users and reservations
-- Admin enhancements demonstrate Django admin customization
-- Visual coherence across pages shows attention to UI/UX
-- Test coverage proves basic workflow stability
-- Session cart logic explains practical reservation staging
+- Dodać krótkie slajdy/sekcję w README pokazującą scenariusz użytkownika i administratora.
+- Opcjonalnie: implementacja wysyłki e-mail dla `Powiadomienie` (SMTP) — przydatne na prezentacji jako rozszerzenie.
+
+---
+
+Plik stworzony/aktualizowany jako część dokumentacji pracy dyplomowej.
