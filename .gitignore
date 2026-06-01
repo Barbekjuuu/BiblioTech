@@ -16,3 +16,6 @@ env/
 # Systemowe
 .DS_Store
 Thumbs.db
+
+# Pliki archiwalne i lokalne kopie
+*.zip

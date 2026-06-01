@@ -12,9 +12,6 @@ urlpatterns = [
 
     # Logowanie i rejestracja (używamy wbudowanego systemu Django)
     path('accounts/', include('django.contrib.auth.urls')),
-    
-    # Debug Toolbar
-    path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 # Obsługa zdjęć (media) w trybie developerskim
