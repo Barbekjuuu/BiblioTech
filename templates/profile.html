@@ -56,12 +56,14 @@
                         <p><strong>Data wypożyczenia:</strong> {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}</p>
                         <p><strong>Ważna do:</strong> {{ rez.data_waznosci|date:"d.m.Y H:i" }}</p>
                         <div class="reservation-actions">
-                            <a href="{% url 'anuluj_rezerwacje' rez.id %}" 
-                               onclick="return confirm('Czy na pewno chcesz anulować wypożyczenie?')"
-                               class="cancel-btn">Anuluj wypożyczenie</a>
-                            <a href="{% url 'zwroc_rezerwacje' rez.id %}" 
-                               onclick="return confirm('Czy na pewno chcesz zwrócić tę książkę?')"
-                               class="btn-save">Zwróć książkę</a>
+                            <form action="{% url 'anuluj_rezerwacje' rez.id %}" method="post" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('Czy na pewno chcesz anulować wypożyczenie?')" class="cancel-btn">Anuluj wypożyczenie</button>
+                            </form>
+                            <form action="{% url 'zwroc_rezerwacje' rez.id %}" method="post" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('Czy na pewno chcesz zwrócić tę książkę?')" class="btn-save">Zwróć książkę</button>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}
@@ -92,9 +94,10 @@
                         <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
                         <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
                         <div class="reservation-actions">
-                            <a href="{% url 'anuluj_rezerwacje_oczekujaca' ocz.id %}"
-                               onclick="return confirm('Czy na pewno chcesz anulować oczekujące zgłoszenie?')"
-                               class="cancel-btn">Anuluj zgłoszenie</a>
+                            <form action="{% url 'anuluj_rezerwacje_oczekujaca' ocz.id %}" method="post" class="inline-form">
+                                {% csrf_token %}
+                                <button type="submit" onclick="return confirm('Czy na pewno chcesz anulować oczekujące zgłoszenie?')" class="cancel-btn">Anuluj zgłoszenie</button>
+                            </form>
                         </div>
                     </div>
                 {% endfor %}

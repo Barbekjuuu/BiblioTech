@@ -81,7 +81,7 @@ class BiblioTechTests(TestCase):
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
 
         oczekujaca = RezerwacjaOczekujaca.objects.get(uzytkownik=self.user, ksiazka=self.ksiazka)
-        response = self.client.get(reverse('anuluj_rezerwacje_oczekujaca', args=[oczekujaca.id]))
+        response = self.client.post(reverse('anuluj_rezerwacje_oczekujaca', args=[oczekujaca.id]))
         self.assertRedirects(response, reverse('profile') + '?tab=oczekujace')
         oczekujaca.refresh_from_db()
         self.assertFalse(oczekujaca.aktywna)
@@ -118,7 +118,7 @@ class BiblioTechTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
         rezerwacja = Rezerwacja.objects.first()
-        response = self.client.get(reverse('zwroc_rezerwacje', args=[rezerwacja.id]))
+        response = self.client.post(reverse('zwroc_rezerwacje', args=[rezerwacja.id]))
 
         self.assertRedirects(response, reverse('profile') + '?tab=wypozyczenia')
         rezerwacja.refresh_from_db()
@@ -186,7 +186,7 @@ class BiblioTechTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
         rezerwacja = Rezerwacja.objects.first()
-        response = self.client.get(reverse('anuluj_rezerwacje', args=[rezerwacja.id]))
+        response = self.client.post(reverse('anuluj_rezerwacje', args=[rezerwacja.id]))
 
         self.assertRedirects(response, reverse('profile') + '?tab=wypozyczenia')
         self.assertFalse(Rezerwacja.objects.filter(id=rezerwacja.id).exists())

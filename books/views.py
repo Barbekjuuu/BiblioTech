@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja, RezerwacjaOczekujaca, Powiadomienie
@@ -320,6 +321,7 @@ def profile(request):
 
 
 @login_required
+@require_POST
 def anuluj_rezerwacje(request, rezerwacja_id):
     """Anulowanie rezerwacji"""
     rezerwacja = get_object_or_404(Rezerwacja, id=rezerwacja_id, uzytkownik=request.user)
@@ -334,6 +336,7 @@ def anuluj_rezerwacje(request, rezerwacja_id):
 
 
 @login_required
+@require_POST
 def anuluj_rezerwacje_oczekujaca(request, oczekujaca_id):
     """Anuluje oczekującą rezerwację użytkownika."""
     oczekujaca = get_object_or_404(RezerwacjaOczekujaca, id=oczekujaca_id, uzytkownik=request.user, aktywna=True)
@@ -344,6 +347,7 @@ def anuluj_rezerwacje_oczekujaca(request, oczekujaca_id):
 
 
 @login_required
+@require_POST
 def zwroc_rezerwacje(request, rezerwacja_id):
     """Obsługa zwrotu rezerwacji i przywrócenie egzemplarza do dostępnych."""
     rezerwacja = get_object_or_404(Rezerwacja, id=rezerwacja_id, uzytkownik=request.user, data_zwrotu__isnull=True)
