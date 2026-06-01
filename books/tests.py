@@ -82,7 +82,7 @@ class BiblioTechTests(TestCase):
 
         oczekujaca = RezerwacjaOczekujaca.objects.get(uzytkownik=self.user, ksiazka=self.ksiazka)
         response = self.client.get(reverse('anuluj_rezerwacje_oczekujaca', args=[oczekujaca.id]))
-        self.assertRedirects(response, reverse('profile') + '?tab=rezerwacje')
+        self.assertRedirects(response, reverse('profile') + '?tab=oczekujace')
         oczekujaca.refresh_from_db()
         self.assertFalse(oczekujaca.aktywna)
 
@@ -120,7 +120,7 @@ class BiblioTechTests(TestCase):
         rezerwacja = Rezerwacja.objects.first()
         response = self.client.get(reverse('zwroc_rezerwacje', args=[rezerwacja.id]))
 
-        self.assertRedirects(response, reverse('profile'))
+        self.assertRedirects(response, reverse('profile') + '?tab=wypozyczenia')
         rezerwacja.refresh_from_db()
         self.egzemplarz.refresh_from_db()
         self.assertIsNotNone(rezerwacja.data_zwrotu)
@@ -175,6 +175,21 @@ class BiblioTechTests(TestCase):
         self.assertRedirects(response, reverse('ksiazka_detail', args=[self.ksiazka.id]))
         oczekujaca = RezerwacjaOczekujaca.objects.filter(uzytkownik=self.user, ksiazka=self.ksiazka, aktywna=True)
         self.assertEqual(oczekujaca.count(), 1)
+
+    def test_cancel_reservation_redirects_to_wypozyczenia(self):
+        """Testuje anulowanie wypożyczenia i powrót do zakładki wypożyczenia."""
+        self.client.login(username='testuser', password='testpass123')
+
+        response = self.client.post(reverse('dodaj_do_koszyka', args=[self.egzemplarz.id]))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.post(reverse('zatwierdz_koszyk'))
+        self.assertEqual(response.status_code, 302)
+
+        rezerwacja = Rezerwacja.objects.first()
+        response = self.client.get(reverse('anuluj_rezerwacje', args=[rezerwacja.id]))
+
+        self.assertRedirects(response, reverse('profile') + '?tab=wypozyczenia')
+        self.assertFalse(Rezerwacja.objects.filter(id=rezerwacja.id).exists())
 
     def test_waiting_reservation_not_created_when_book_available(self):
         """Test, że rezerwacja oczekująca nie jest tworzona, gdy książka jest dostępna."""

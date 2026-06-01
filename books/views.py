@@ -329,8 +329,8 @@ def anuluj_rezerwacje(request, rezerwacja_id):
     notify_next_waiting_user(egzemplarz.ksiazka)
     rezerwacja.delete()
     
-    messages.success(request, 'Rezerwacja została pomyślnie anulowana.')
-    return redirect('profile')
+    messages.success(request, 'Wypożyczenie zostało pomyślnie anulowane.')
+    return redirect(f"{reverse('profile')}?tab=wypozyczenia")
 
 
 @login_required
@@ -340,7 +340,7 @@ def anuluj_rezerwacje_oczekujaca(request, oczekujaca_id):
     oczekujaca.aktywna = False
     oczekujaca.save()
     messages.success(request, 'Twoje oczekujące zgłoszenie zostało anulowane.')
-    return redirect(f"{reverse('profile')}?tab=rezerwacje")
+    return redirect(f"{reverse('profile')}?tab=oczekujace")
 
 
 @login_required
@@ -356,7 +356,7 @@ def zwroc_rezerwacje(request, rezerwacja_id):
 
     notify_next_waiting_user(egzemplarz.ksiazka)
     messages.success(request, 'Książka została zwrócona i jest ponownie dostępna.')
-    return redirect('profile')
+    return redirect(f"{reverse('profile')}?tab=wypozyczenia")
 
 
 @login_required

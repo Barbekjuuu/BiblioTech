@@ -18,9 +18,14 @@
     <div class="profile-sidebar">
         <h2>Mój Profil</h2>
         
-        <a href="{% url 'profile' %}?tab=rezerwacje" 
-             class="sidebar-tab {% if active_tab == 'rezerwacje' or not active_tab %}active{% endif %}">
-            � Moje Rezerwacje
+    <a href="{% url 'profile' %}?tab=wypozyczenia" 
+             class="sidebar-tab {% if active_tab == 'wypozyczenia' or not active_tab %}active{% endif %}">
+            📚 Moje wypożyczenia
+        </a>
+        
+        <a href="{% url 'profile' %}?tab=oczekujace" 
+             class="sidebar-tab {% if active_tab == 'oczekujace' %}active{% endif %}">
+            ⏳ Oczekujące rezerwacje
         </a>
         
         <a href="{% url 'profile' %}?tab=dane" 
@@ -41,19 +46,19 @@
     <!-- Prawa zawartość -->
     <div class="profile-content">
         
-        {% if active_tab == 'rezerwacje' or not active_tab %}
-            <h1>Moje Rezerwacje</h1>
+        {% if active_tab == 'wypozyczenia' or not active_tab %}
+            <h1>Moje wypożyczenia</h1>
             {% if rezerwacje %}
                 {% for rez in rezerwacje %}
                     <div class="rezerwacja-card">
                         <h3>{{ rez.egzemplarz.ksiazka.tytul }}</h3>
                         <p><strong>Autor:</strong> {{ rez.egzemplarz.ksiazka.autor }}</p>
-                        <p><strong>Data rezerwacji:</strong> {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}</p>
+                        <p><strong>Data wypożyczenia:</strong> {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}</p>
                         <p><strong>Ważna do:</strong> {{ rez.data_waznosci|date:"d.m.Y H:i" }}</p>
                         <div class="reservation-actions">
                             <a href="{% url 'anuluj_rezerwacje' rez.id %}" 
-                               onclick="return confirm('Czy na pewno chcesz anulować rezerwację?')"
-                               class="cancel-btn">Anuluj rezerwację</a>
+                               onclick="return confirm('Czy na pewno chcesz anulować wypożyczenie?')"
+                               class="cancel-btn">Anuluj wypożyczenie</a>
                             <a href="{% url 'zwroc_rezerwacje' rez.id %}" 
                                onclick="return confirm('Czy na pewno chcesz zwrócić tę książkę?')"
                                class="btn-save">Zwróć książkę</a>
@@ -61,12 +66,12 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p>Nie masz jeszcze żadnych aktywnych rezerwacji.</p>
+                <p>Nie masz jeszcze żadnych aktywnych wypożyczeń.</p>
             {% endif %}
 
             {% if historia_rezerwacji %}
                 <div class="history-section">
-                    <h2>Historia rezerwacji</h2>
+                    <h2>Historia wypożyczeń</h2>
                     {% for hist in historia_rezerwacji %}
                         <div class="rezerwacja-card">
                             <h3>{{ hist.egzemplarz.ksiazka.tytul }}</h3>
@@ -77,23 +82,24 @@
                 </div>
             {% endif %}
 
+        {% elif active_tab == 'oczekujace' %}
+            <h1>Oczekujące rezerwacje</h1>
             {% if rezerwacje_oczekujace %}
-                <div class="pending-section">
-                    <h2>Oczekujące zgłoszenia</h2>
-                    {% for ocz in rezerwacje_oczekujace %}
-                        <div class="rezerwacja-card">
-                            <h3>{{ ocz.ksiazka.tytul }}</h3>
-                            <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
-                            <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
-                            <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
-                            <div class="reservation-actions">
-                                <a href="{% url 'anuluj_rezerwacje_oczekujaca' ocz.id %}"
-                                   onclick="return confirm('Czy na pewno chcesz anulować oczekujące zgłoszenie?')"
-                                   class="cancel-btn">Anuluj zgłoszenie</a>
-                            </div>
+                {% for ocz in rezerwacje_oczekujace %}
+                    <div class="rezerwacja-card">
+                        <h3>{{ ocz.ksiazka.tytul }}</h3>
+                        <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
+                        <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
+                        <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
+                        <div class="reservation-actions">
+                            <a href="{% url 'anuluj_rezerwacje_oczekujaca' ocz.id %}"
+                               onclick="return confirm('Czy na pewno chcesz anulować oczekujące zgłoszenie?')"
+                               class="cancel-btn">Anuluj zgłoszenie</a>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nie masz aktualnie żadnych oczekujących rezerwacji.</p>
             {% endif %}
 
         {% elif active_tab == 'powiadomienia' %}
