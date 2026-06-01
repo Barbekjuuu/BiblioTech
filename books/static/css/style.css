@@ -664,6 +664,83 @@ nav a:hover { color: #fcd34d; }
     min-height: 420px;
 }
 
+.profile-form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.2rem;
+}
+
+.profile-form .form-group {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.profile-form label {
+    color: #f8e8b0;
+    font-weight: 600;
+}
+
+.input-field {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(252, 211, 77, 0.18);
+    color: #f8f1c6;
+    border-radius: 14px;
+    padding: 0.95rem 1rem;
+    font-size: 1rem;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: rgba(252, 211, 77, 0.55);
+    box-shadow: 0 0 0 4px rgba(252, 211, 77, 0.12);
+}
+
+.disabled-field {
+    opacity: 0.72;
+    cursor: not-allowed;
+}
+
+.btn-save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    padding: 0.95rem 1.45rem;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #f3d45e 0%, #d8b043 100%);
+    color: #1f2937;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(255, 214, 92, 0.18);
+}
+
+.messages-wrap {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+}
+
+.message {
+    padding: 1rem 1.2rem;
+    border-radius: 16px;
+    background: rgba(252, 211, 77, 0.11);
+    border: 1px solid rgba(252, 211, 77, 0.25);
+    color: #f8e6ae;
+}
+
+.message.error {
+    background: rgba(248, 113, 113, 0.12);
+    border-color: rgba(248, 113, 113, 0.35);
+    color: #ffe6e6;
+}
+
 .profile-content h1 {
     margin-top: 0;
     color: #f8e7ad;

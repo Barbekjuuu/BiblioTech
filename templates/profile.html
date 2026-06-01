@@ -3,6 +3,15 @@
 {% block title %}Mój Profil - BiblioTech{% endblock %}
 
 {% block content %}
+{#
+    Profil użytkownika jest podzielony na dwie sekcje:
+    - lewy panel nawigacyjny z zakładkami
+    - prawa sekcja wyników z treścią wybranej opcji
+
+    Ta struktura pomaga obronić projekt poprzez wyjaśnienie,
+    że użytkownik może przełączać się między rezerwacjami,
+    danymi osobowymi i zmianą hasła.
+#}
 <div class="profile-container">
 
     <!-- Lewy Sidebar -->
@@ -48,17 +57,62 @@
 
         {% elif active_tab == 'dane' %}
             <h1>Moje Dane Osobowe</h1>
-            <div class="dane-box">
-                <p><strong>Username:</strong> {{ user.username }}</p>
-                <p><strong>Email:</strong> {{ user.email|default:"Nie podano" }}</p>
-                <p><strong>Imię i Nazwisko:</strong> {{ user.get_full_name|default:"Nie podano" }}</p>
-                <br>
-                <a href="#" class="btn-edit">✏️ Zmień dane osobowe</a>
-            </div>
+            <form method="post" class="profile-form">
+                {% csrf_token %}
+                {{ profile_form.non_field_errors }}
+
+                <div class="form-group">
+                    <label>Login</label>
+                    <input type="text" value="{{ user.username }}" disabled class="input-field disabled-field">
+                </div>
+
+                <div class="form-group">
+                    {{ profile_form.email.label_tag }}
+                    {{ profile_form.email }}
+                    {{ profile_form.email.errors }}
+                </div>
+
+                <div class="form-group">
+                    {{ profile_form.first_name.label_tag }}
+                    {{ profile_form.first_name }}
+                    {{ profile_form.first_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    {{ profile_form.last_name.label_tag }}
+                    {{ profile_form.last_name }}
+                    {{ profile_form.last_name.errors }}
+                </div>
+
+                <button type="submit" name="form_type" value="profile" class="btn-save">Zapisz zmiany</button>
+            </form>
 
         {% elif active_tab == 'haslo' %}
             <h1>Zmiana Hasła</h1>
-            <p>Tutaj będzie formularz zmiany hasła.</p>
+            <form method="post" class="profile-form">
+                {% csrf_token %}
+                {{ password_form.non_field_errors }}
+
+                <div class="form-group">
+                    {{ password_form.old_password.label_tag }}
+                    {{ password_form.old_password }}
+                    {{ password_form.old_password.errors }}
+                </div>
+
+                <div class="form-group">
+                    {{ password_form.new_password1.label_tag }}
+                    {{ password_form.new_password1 }}
+                    {{ password_form.new_password1.errors }}
+                </div>
+
+                <div class="form-group">
+                    {{ password_form.new_password2.label_tag }}
+                    {{ password_form.new_password2 }}
+                    {{ password_form.new_password2.errors }}
+                </div>
+
+                <button type="submit" name="form_type" value="password" class="btn-save">Zmień hasło</button>
+            </form>
         {% endif %}
 
     </div>

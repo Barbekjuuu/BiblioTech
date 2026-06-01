@@ -1,13 +1,26 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Ksiazka, Gatunek, Egzemplarz, Rezerwacja
+from .forms import UserProfileForm, CustomPasswordChangeForm
+
+# -----------------------------------------------------------------------------
+# BiblioTech public views
+# -----------------------------------------------------------------------------
+# This module contains the core page controllers for the library application:
+# - home page with featured books
+# - searchable catalog with filters and pagination
+# - detailed book view with availability and cart actions
+# - user registration, login, logout
+# - shopping cart management in session
+# - reservation checkout and profile order history
+# -----------------------------------------------------------------------------
 
 
 def home(request):
@@ -21,7 +34,14 @@ def home(request):
 
 
 def katalog(request):
-    """Pełny katalog książek z paginacją"""
+    """Pełny katalog książek z paginacją.
+
+    Ten widok obsługuje:
+    - wyszukiwanie tekstowe
+    - filtrowanie po gatunku i języku
+    - ustawienie liczby pozycji na stronę
+    - przygotowanie danych dostępności egzemplarzy
+    """
     ksiazki = Ksiazka.objects.all()
     gatunki = Gatunek.objects.all()
     
@@ -45,6 +65,9 @@ def katalog(request):
     # Przygotowanie danych dla szablonu
     ksiazki_z_danymi = []
     for ksiazka in ksiazki:
+        # Przygotowujemy dodatkowe dane dla każdej książki:
+        # - liczbę dostępnych egzemplarzy
+        # - pierwszy dostępny egzemplarz do szybkiej akcji wypożyczenia
         dostepne = ksiazka.egzemplarze.filter(status='dostepny')
         available_count = dostepne.count()
         first_available_id = dostepne.first().id if dostepne.exists() else None
@@ -84,7 +107,11 @@ def katalog(request):
 
 
 def ksiazka_detail(request, pk):
-    """Szczegóły jednej książki"""
+    """Szczegóły jednej książki.
+
+    Widok pokazuje pełne dane książki wraz z liczbą dostępnych egzemplarzy.
+    Jeśli egzemplarze są dostępne, udostępnia szybki przycisk dodania do koszyka.
+    """
     ksiazka = get_object_or_404(Ksiazka, pk=pk)
     
     # Poprawne liczenie dostępnych egzemplarzy
@@ -131,9 +158,12 @@ class CustomLogoutView(LogoutView):
 
 @login_required
 def dodaj_do_koszyka(request, egzemplarz_id):
-    """Dodaje egzemplarz do koszyka (sesja)"""
+    """Dodaje egzemplarz do koszyka (sesja)."""
     egzemplarz = get_object_or_404(Egzemplarz, id=egzemplarz_id, status='dostepny')
     
+    # Koszyk jest przechowywany w sesji przeglądarki użytkownika.
+    # To podejście pozwala zachować stan przed zatwierdzeniem wypożyczenia,
+    # a jednocześnie nie wymaga tworzenia osobnego modelu koszyka.
     koszyk = request.session.get('koszyk', [])
     if egzemplarz_id not in koszyk:
         koszyk.append(egzemplarz_id)
@@ -160,9 +190,11 @@ def koszyk(request):
 
 @login_required
 def zatwierdz_koszyk(request):
-    """Zatwierdza koszyk i przenosi do Moich wypożyczeń"""
+    """Zatwierdza koszyk i przenosi do Moich wypożyczeń."""
     koszyk_ids = request.session.get('koszyk', [])
     
+    # Przy zatwierdzaniu koszyka tworzymy rezerwacje dla wszystkich dodanych egzemplarzy.
+    # Po zamknięciu transakcji egzemplarze zmieniają status na 'zarezerwowany'.
     for egz_id in koszyk_ids:
         egzemplarz = get_object_or_404(Egzemplarz, id=egz_id, status='dostepny')
         Rezerwacja.objects.create(
@@ -179,14 +211,39 @@ def zatwierdz_koszyk(request):
 
 @login_required
 def profile(request):
-    """Strona profilu użytkownika"""
+    """Strona profilu użytkownika."""
     tab = request.GET.get('tab', 'rezerwacje')
     rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')
-    
+
+    profile_form = UserProfileForm(instance=request.user)
+    password_form = CustomPasswordChangeForm(user=request.user)
+
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+
+        if form_type == 'profile':
+            tab = 'dane'
+            profile_form = UserProfileForm(request.POST, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Twoje dane osobowe zostały zaktualizowane.')
+                return redirect(f"{reverse('profile')}?tab=dane")
+
+        elif form_type == 'password':
+            tab = 'haslo'
+            password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Hasło zostało pomyślnie zmienione.')
+                return redirect(f"{reverse('profile')}?tab=haslo")
+
     kontekst = {
         'rezerwacje': rezerwacje,
         'title': 'Mój Profil',
         'active_tab': tab,
+        'profile_form': profile_form,
+        'password_form': password_form,
     }
     return render(request, 'profile.html', kontekst)
 
