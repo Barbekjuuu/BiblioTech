@@ -120,6 +120,7 @@ class Rezerwacja(models.Model):
     
     data_rezerwacji = models.DateTimeField(auto_now_add=True)
     data_waznosci = models.DateTimeField()
+    data_zwrotu = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # Ustawiamy datę rezerwacji jeśli nie jest ustawiona
@@ -133,7 +134,8 @@ class Rezerwacja(models.Model):
         super().save(*args, **kwargs)    
 
     def __str__(self):
-        return f"Rezerwacja: {self.egzemplarz} dla {self.uzytkownik}"
+        status = 'zwrocona' if self.data_zwrotu else 'aktywna'
+        return f"Rezerwacja ({status}): {self.egzemplarz} dla {self.uzytkownik}"
 
     class Meta:
         verbose_name = "Rezerwacja"

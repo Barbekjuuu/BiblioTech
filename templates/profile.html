@@ -50,40 +50,45 @@
                         <p><strong>Autor:</strong> {{ rez.egzemplarz.ksiazka.autor }}</p>
                         <p><strong>Data rezerwacji:</strong> {{ rez.data_rezerwacji|date:"d.m.Y H:i" }}</p>
                         <p><strong>Ważna do:</strong> {{ rez.data_waznosci|date:"d.m.Y H:i" }}</p>
-                        <a href="{% url 'anuluj_rezerwacje' rez.id %}" 
-                           onclick="return confirm('Czy na pewno chcesz anulować rezerwację?')"
-                           class="cancel-btn">Anuluj rezerwację</a>
+                        <div class="reservation-actions">
+                            <a href="{% url 'anuluj_rezerwacje' rez.id %}" 
+                               onclick="return confirm('Czy na pewno chcesz anulować rezerwację?')"
+                               class="cancel-btn">Anuluj rezerwację</a>
+                            <a href="{% url 'zwroc_rezerwacje' rez.id %}" 
+                               onclick="return confirm('Czy na pewno chcesz zwrócić tę książkę?')"
+                               class="btn-save">Zwróć książkę</a>
+                        </div>
                     </div>
                 {% endfor %}
-
-                {% if rezerwacje_oczekujace %}
-                    <div class="pending-section">
-                        <h2>Oczekujące zgłoszenia</h2>
-                        {% for ocz in rezerwacje_oczekujace %}
-                            <div class="rezerwacja-card">
-                                <h3>{{ ocz.ksiazka.tytul }}</h3>
-                                <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
-                                <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
-                                <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             {% else %}
-                <p>Nie masz jeszcze żadnych rezerwacji.</p>
-                {% if rezerwacje_oczekujace %}
-                    <div class="pending-section">
-                        <h2>Oczekujące zgłoszenia</h2>
-                        {% for ocz in rezerwacje_oczekujace %}
-                            <div class="rezerwacja-card">
-                                <h3>{{ ocz.ksiazka.tytul }}</h3>
-                                <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
-                                <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
-                                <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                <p>Nie masz jeszcze żadnych aktywnych rezerwacji.</p>
+            {% endif %}
+
+            {% if historia_rezerwacji %}
+                <div class="history-section">
+                    <h2>Historia rezerwacji</h2>
+                    {% for hist in historia_rezerwacji %}
+                        <div class="rezerwacja-card">
+                            <h3>{{ hist.egzemplarz.ksiazka.tytul }}</h3>
+                            <p><strong>Autor:</strong> {{ hist.egzemplarz.ksiazka.autor }}</p>
+                            <p><strong>Data zwrotu:</strong> {{ hist.data_zwrotu|date:"d.m.Y H:i" }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if rezerwacje_oczekujace %}
+                <div class="pending-section">
+                    <h2>Oczekujące zgłoszenia</h2>
+                    {% for ocz in rezerwacje_oczekujace %}
+                        <div class="rezerwacja-card">
+                            <h3>{{ ocz.ksiazka.tytul }}</h3>
+                            <p><strong>Autor:</strong> {{ ocz.ksiazka.autor }}</p>
+                            <p><strong>Data zgłoszenia:</strong> {{ ocz.data_zgloszenia|date:"d.m.Y H:i" }}</p>
+                            <p class="pending-note">Oczekuje na dostępność egzemplarza.</p>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
 
         {% elif active_tab == 'powiadomienia' %}

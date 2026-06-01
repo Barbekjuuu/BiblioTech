@@ -5,6 +5,7 @@ from django.http import Http404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
+from django.utils import timezone
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -271,7 +272,8 @@ def zatwierdz_koszyk(request):
 def profile(request):
     """Strona profilu użytkownika."""
     tab = request.GET.get('tab', 'rezerwacje')
-    rezerwacje = request.user.rezerwacje.all().order_by('-data_rezerwacji')
+    rezerwacje = request.user.rezerwacje.filter(data_zwrotu__isnull=True).order_by('-data_rezerwacji')
+    historia_rezerwacji = request.user.rezerwacje.filter(data_zwrotu__isnull=False).order_by('-data_zwrotu')
     rezerwacje_oczekujace = request.user.oczekujace_rezerwacje.filter(aktywna=True).order_by('-data_zgloszenia')
     powiadomienia = request.user.powiadomienia.order_by('-utworzone')
 
@@ -300,6 +302,7 @@ def profile(request):
 
     kontekst = {
         'rezerwacje': rezerwacje,
+        'historia_rezerwacji': historia_rezerwacji,
         'rezerwacje_oczekujace': rezerwacje_oczekujace,
         'powiadomienia': powiadomienia,
         'title': 'Mój Profil',
@@ -321,6 +324,22 @@ def anuluj_rezerwacje(request, rezerwacja_id):
     rezerwacja.delete()
     
     messages.success(request, 'Rezerwacja została pomyślnie anulowana.')
+    return redirect('profile')
+
+
+@login_required
+def zwroc_rezerwacje(request, rezerwacja_id):
+    """Obsługa zwrotu rezerwacji i przywrócenie egzemplarza do dostępnych."""
+    rezerwacja = get_object_or_404(Rezerwacja, id=rezerwacja_id, uzytkownik=request.user, data_zwrotu__isnull=True)
+    egzemplarz = rezerwacja.egzemplarz
+    egzemplarz.status = 'dostepny'
+    egzemplarz.save()
+
+    rezerwacja.data_zwrotu = timezone.now()
+    rezerwacja.save()
+
+    notify_next_waiting_user(egzemplarz.ksiazka)
+    messages.success(request, 'Książka została zwrócona i jest ponownie dostępna.')
     return redirect('profile')
 
 

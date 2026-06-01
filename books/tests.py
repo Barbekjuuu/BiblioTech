@@ -71,6 +71,24 @@ class BiblioTechTests(TestCase):
         self.assertRedirects(response, reverse('koszyk'))
         self.assertEqual(Rezerwacja.objects.count(), 0)
 
+    def test_return_reservation_makes_copy_available(self):
+        """Testuje zwrot rezerwacji i przywrócenie egzemplarza do dostępnych."""
+        self.client.login(username='testuser', password='testpass123')
+
+        response = self.client.post(reverse('dodaj_do_koszyka', args=[self.egzemplarz.id]))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.post(reverse('zatwierdz_koszyk'))
+        self.assertEqual(response.status_code, 302)
+
+        rezerwacja = Rezerwacja.objects.first()
+        response = self.client.get(reverse('zwroc_rezerwacje', args=[rezerwacja.id]))
+
+        self.assertRedirects(response, reverse('profile'))
+        rezerwacja.refresh_from_db()
+        self.egzemplarz.refresh_from_db()
+        self.assertIsNotNone(rezerwacja.data_zwrotu)
+        self.assertEqual(self.egzemplarz.status, 'dostepny')
+
     def test_profile_update(self):
         """Test aktualizacji danych osobowych użytkownika."""
         self.client.login(username='testuser', password='testpass123')

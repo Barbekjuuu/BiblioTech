@@ -21,6 +21,7 @@ urlpatterns = [
     path('profil/', views.profile, name='profile'),
     path('powiadomienie/przeczytaj/<int:powiadomienie_id>/', views.oznacz_powiadomienie_przeczytane, name='oznacz_powiadomienie_przeczytane'),
     path('powiadomienie/oznacz-wszystkie/', views.oznacz_wszystkie_powiadomienia_przeczytane, name='oznacz_wszystkie_powiadomienia_przeczytane'),
+    path('rezerwacja/zwroc/<int:rezerwacja_id>/', views.zwroc_rezerwacje, name='zwroc_rezerwacje'),
     path('ksiazka/rezerwuj/<int:ksiazka_id>/', views.zarezerwuj_ksiazke, name='zarezerwuj_ksiazke'),
     path('rezerwacja/anuluj/<int:rezerwacja_id>/', views.anuluj_rezerwacje, name='anuluj_rezerwacje'),
 ]
