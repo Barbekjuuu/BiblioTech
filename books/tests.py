@@ -217,3 +217,45 @@ class BiblioTechTests(TestCase):
 
         self.assertRedirects(response, reverse('profile') + '?tab=powiadomienia')
         self.assertEqual(self.user.powiadomienia.filter(przeczytane=False).count(), 0)
+
+    def test_admin_create_reservation_for_user(self):
+        """Testuje, że pracownik admin może utworzyć rezerwację dla klienta."""
+        # utwórz superusera i zaloguj się
+        admin = User.objects.create_superuser(username='admin', email='admin@example.com', password='adminpass')
+        self.client.force_login(admin)
+
+        url = reverse('admin:books_rezerwacja_create_for_user')
+        data = {
+            'egzemplarz': str(self.egzemplarz.id),
+            'email': 'nowyklient@example.com',
+            'first_name': 'Anna',
+            'last_name': 'Nowak'
+        }
+
+        response = self.client.post(url, data)
+        # should redirect to rezerwacja changelist
+        self.assertEqual(response.status_code, 302)
+        # reservation created
+        self.assertTrue(Rezerwacja.objects.filter(egzemplarz=self.egzemplarz).exists())
+        self.egzemplarz.refresh_from_db()
+        self.assertEqual(self.egzemplarz.status, 'zarezerwowany')
+
+    def test_admin_create_reservation_fails_if_copy_unavailable(self):
+        """Walidacja: admin nie może rezerwować egzemplarza, który nie jest dostępny."""
+        admin = User.objects.create_superuser(username='admin2', email='admin2@example.com', password='adminpass')
+        self.client.force_login(admin)
+
+        # ustaw egzemplarz jako zarezerwowany
+        self.egzemplarz.status = 'zarezerwowany'
+        self.egzemplarz.save()
+
+        url = reverse('admin:books_rezerwacja_create_for_user')
+        data = {
+            'egzemplarz': str(self.egzemplarz.id),
+            'email': 'klient2@example.com',
+        }
+
+        response = self.client.post(url, data)
+        # form should be re-rendered with error
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Wybrany egzemplarz nie jest dostępny do rezerwacji.', response.content.decode('utf-8'))
