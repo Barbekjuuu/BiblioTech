@@ -1,4 +1,4 @@
-/* Admin custom theme to match BiblioTech dark/gold style */
+﻿/* Admin custom theme to match BiblioTech dark/gold style */
 body#admin {
     background: linear-gradient(180deg, #0b1220 0%, #0f1724 100%);
     color: #e6dfb3;
@@ -6,58 +6,138 @@ body#admin {
 
 /* Header */
 #header {
-    background: linear-gradient(90deg, rgba(40,40,40,0.95), rgba(20,20,30,0.95));
-    border-bottom: 1px solid rgba(252,211,77,0.12);
+    background: linear-gradient(90deg, rgba(14,18,28,0.98), rgba(8,12,20,0.98));
+    border-bottom: 1px solid rgba(252,211,77,0.14);
 }
 
 #branding {
     color: #f7e2a1;
 }
 
+#branding a {
+    color: #f7e2a1;
+}
+
+#branding a:hover {
+    color: #fff;
+}
+
 /* Module blocks */
-.module, .module caption, .app-list .model a {
-    background: rgba(17, 24, 39, 0.6);
-    border: 1px solid rgba(252,211,77,0.12);
+.module, .module caption, .app-list .model a, fieldset.module, .inline-group {
+    background: rgba(10, 15, 27, 0.82);
+    border: 1px solid rgba(252,211,77,0.18);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.24);
     color: #e8e0b2;
 }
 
-.module h2, .module caption h2 {
+.module h2, .module caption h2, fieldset h2 {
     color: #f8e8b3;
 }
 
 /* Buttons */
-.submit-row input, .button, .deletelink {
-    background: linear-gradient(135deg,#b28c32 0%, #f3d24e 100%);
+input[type=submit], input[type=button], button, .button, .submit-row .default, .deletelink {
+    background: linear-gradient(135deg, #f3d45e 0%, #d8b043 100%);
+    border: 1px solid rgba(255,221,92,0.24);
     color: #1f2937 !important;
-    border: none;
-    box-shadow: 0 8px 18px rgba(184,152,62,0.18);
+    box-shadow: 0 6px 18px rgba(184,152,62,0.22);
+    border-radius: 14px;
+    padding: 0.8em 1.4em;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
 }
 
-.submit-row input:hover, .button:hover, .deletelink:hover {
+input[type=submit]:hover, .button:hover, .deletelink:hover, .submit-row a:hover, .button.default:hover {
     transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.deletelink {
+    background: rgba(217, 175, 6, 0.14);
+    color: #fff !important;
+    box-shadow: none;
+}
+
+.deletelink:hover {
+    background: rgba(217, 175, 6, 0.28);
+}
+
+.submit-row {
+    margin-top: 1.6em;
 }
 
 /* Table rows */
-table.results th, table.results td {
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+table.results th, table.results td, table, .module table {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+tr.row1, tr.row2, .row1, .row2 {
+    background: rgba(255,255,255,0.02);
+}
+
+tr.row1:hover, tr.row2:hover {
+    background: rgba(252,211,77,0.08);
 }
 
 /* Form labels */
 label {
-    color: #e8e0b2;
+    color: #f8e8b0;
+    font-weight: 600;
 }
 
 /* Links */
-a {
+a, .breadcrumbs a, .model a, .module caption a {
     color: #f8d557;
 }
 
-/* Override admin sidebar */
-.app-list div.module ul.model-list li a {
-    color: #d9d0a4;
+a:hover, .breadcrumbs a:hover, .model a:hover {
+    color: #ffe78b;
+}
+
+/* Form elements */
+input, select, textarea, .selectfilter, .selectfilter+select {
+    background: rgba(15, 23, 42, 0.92);
+    color: #f8f1c6;
+    border: 1px solid rgba(252, 211, 77, 0.18);
+    border-radius: 14px;
+}
+
+input:focus, select:focus, textarea:focus, .selectfilter:focus {
+    outline: none;
+    border-color: rgba(252, 211, 77, 0.55);
+    box-shadow: 0 0 0 4px rgba(252, 211, 77, 0.12);
+}
+
+/* Content cards */
+#content, .module, .fieldset, .inline-group, .app-list .model a {
+    background-image: linear-gradient(rgba(10, 12, 22, 0.82), rgba(10, 12, 22, 0.82));
+    border: 1px solid rgba(252, 211, 77, 0.2);
+    border-radius: 24px;
+}
+
+#content h1, #content h2, .module h2 {
+    color: #f9edb2;
+}
+
+/* Sidebar */
+#nav-sidebar {
+    background: rgba(10,14,24,0.94);
+    border: 1px solid rgba(252,211,77,0.14);
+}
+
+#nav-sidebar .app-list li a {
+    color: #dbcb93;
+}
+
+#nav-sidebar .app-list li a:hover {
+    color: #fff;
 }
 
 /* Breadcrumbs */
 .breadcrumbs {
     color: #d9d0a4;
+}
+
+@media (max-width: 900px) {
+    #header, #content, #nav-sidebar {
+        background: rgba(7,11,18,0.95);
+    }
 }
