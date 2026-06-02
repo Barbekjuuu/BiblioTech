@@ -23,3 +23,4 @@ Thumbs.db
 # Presentation files should not be tracked in Git
 PRESENTATION_FOR_LAYMAN.*
 PRESENTATION.*
+presentation/
