@@ -1,0 +1,63 @@
+/* Admin custom theme to match BiblioTech dark/gold style */
+body#admin {
+    background: linear-gradient(180deg, #0b1220 0%, #0f1724 100%);
+    color: #e6dfb3;
+}
+
+/* Header */
+#header {
+    background: linear-gradient(90deg, rgba(40,40,40,0.95), rgba(20,20,30,0.95));
+    border-bottom: 1px solid rgba(252,211,77,0.12);
+}
+
+#branding {
+    color: #f7e2a1;
+}
+
+/* Module blocks */
+.module, .module caption, .app-list .model a {
+    background: rgba(17, 24, 39, 0.6);
+    border: 1px solid rgba(252,211,77,0.12);
+    color: #e8e0b2;
+}
+
+.module h2, .module caption h2 {
+    color: #f8e8b3;
+}
+
+/* Buttons */
+.submit-row input, .button, .deletelink {
+    background: linear-gradient(135deg,#b28c32 0%, #f3d24e 100%);
+    color: #1f2937 !important;
+    border: none;
+    box-shadow: 0 8px 18px rgba(184,152,62,0.18);
+}
+
+.submit-row input:hover, .button:hover, .deletelink:hover {
+    transform: translateY(-1px);
+}
+
+/* Table rows */
+table.results th, table.results td {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Form labels */
+label {
+    color: #e8e0b2;
+}
+
+/* Links */
+a {
+    color: #f8d557;
+}
+
+/* Override admin sidebar */
+.app-list div.module ul.model-list li a {
+    color: #d9d0a4;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    color: #d9d0a4;
+}

@@ -1,0 +1,13 @@
+{% load static %}
+{% extends "admin/base_site.html" %}
+
+{% block title %}BiblioTech Admin{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'books/css/admin_custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name"><a href="{{ site_url|default:admin_site.index_url }}">BiblioTech</a></h1>
+{% endblock %}
