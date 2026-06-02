@@ -19,3 +19,6 @@ Thumbs.db
 
 # Pliki archiwalne i lokalne kopie
 *.zip
+
+# Presentation files should not be tracked in Git
+PRESENTATION_FOR_LAYMAN.*
